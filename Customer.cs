@@ -70,28 +70,107 @@ namespace MechanicShop
                 int selectedModelID = Convert.ToInt32(comboBox1.SelectedValue);
                 string licensePlate = textBox1.Text;
 
-                string query = "INSERT INTO Car (MakeID, ModelID, LicensePlate) VALUES (@MakeID, @ModelID, @LicensePlate)";
+                // SQL query to insert data into the Car table and retrieve the Car_ID
+                string carQuery = "INSERT INTO Car (MakeID, ModelID, LicensePlate) VALUES (@MakeID, @ModelID, @LicensePlate); SELECT SCOPE_IDENTITY();";
 
+                int carID;
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand(carQuery, connection))
                     {
                         command.Parameters.AddWithValue("@MakeID", selectedMakeID);
                         command.Parameters.AddWithValue("@ModelID", selectedModelID);
                         command.Parameters.AddWithValue("@LicensePlate", licensePlate);
 
-                        command.ExecuteNonQuery();
+                        // ExecuteScalar to get the newly inserted Car_ID
+                        carID = Convert.ToInt32(command.ExecuteScalar());
                     }
                 }
 
-                MessageBox.Show("Car added successfully!");
+                // Check if Car_ID was retrieved successfully
+                if (carID > 0)
+                {
+                    // Debugging message to check carID
+                    MessageBox.Show("Car ID: " + carID);
+
+                    // Get the Cust_ID from the searched customer
+                    int custID = GetCustomerID(textBox4.Text);
+
+                    // Debugging message to check custID
+                    MessageBox.Show("Cust ID: " + custID);
+
+                    if (custID > 0)
+                    {
+                        // Insert into CarOwner table
+                        string ownerQuery = "INSERT INTO CarOwner (Cust_ID, Car_ID) VALUES (@CustID, @CarID)";
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            connection.Open();
+
+                            using (SqlCommand command = new SqlCommand(ownerQuery, connection))
+                            {
+                                command.Parameters.AddWithValue("@CustID", custID);
+                                command.Parameters.AddWithValue("@CarID", carID);
+
+                                // ExecuteNonQuery to insert into CarOwner table
+                                int rowsAffected = command.ExecuteNonQuery();
+
+                                if (rowsAffected > 0)
+                                {
+                                    MessageBox.Show("Car added successfully and linked to the customer!");
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Error linking car to the customer.");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Customer not found.");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Error adding the car.");
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
-            }            
+            }
+        }
+
+
+        // Method to get Cust_ID from phone number
+        private int GetCustomerID(string phoneNumber)
+        {
+            string query = "SELECT Cust_ID FROM Customer WHERE Phone = @PhoneNumber";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+
+                    connection.Open();
+                    object result = command.ExecuteScalar();
+                    connection.Close();
+
+                    if (result != null)
+                    {
+                        return Convert.ToInt32(result);
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
