@@ -1,0 +1,181 @@
+USE [MechanicShop]
+GO
+/****** Object:  Table [dbo].[Car]    Script Date: 3/16/2024 12:00:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Car](
+	[Car_ID] [int] IDENTITY(1,1) NOT NULL,
+	[ModelID] [int] NULL,
+	[MakeID] [int] NULL,
+	[LicensePlate] [varchar](20) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Car_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Car_Service_Date_Services]    Script Date: 3/16/2024 12:00:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Car_Service_Date_Services](
+	[Cust_Car_Date_Tech_ServicesID] [int] NOT NULL,
+	[Cust_Car_Date_ID] [int] NOT NULL,
+	[Tech_Service_ID] [int] NOT NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[CarOwner]    Script Date: 3/16/2024 12:00:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CarOwner](
+	[Cust_Car_ID] [int] IDENTITY(1,1) NOT NULL,
+	[Cust_ID] [int] NULL,
+	[Car_ID] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Cust_Car_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Cust_Car_Servie_Date_Time]    Script Date: 3/16/2024 12:00:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Cust_Car_Servie_Date_Time](
+	[Cust_Car_Date_ID] [int] IDENTITY(1,1) NOT NULL,
+	[Cust_Car_ID] [int] NULL,
+	[ServiceDate] [date] NOT NULL,
+	[ServiceTime] [time](7) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Cust_Car_Date_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Customer]    Script Date: 3/16/2024 12:00:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Customer](
+	[Cust_ID] [int] IDENTITY(1,1) NOT NULL,
+	[Cust_FN] [nvarchar](50) NOT NULL,
+	[Cust_LN] [nvarchar](50) NOT NULL,
+	[Phone] [nvarchar](20) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Cust_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Make]    Script Date: 3/16/2024 12:00:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Make](
+	[MakeID] [int] IDENTITY(1,1) NOT NULL,
+	[Make] [varchar](255) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[MakeID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Model]    Script Date: 3/16/2024 12:00:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Model](
+	[ModelID] [int] IDENTITY(1,1) NOT NULL,
+	[Model] [varchar](255) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ModelID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Services]    Script Date: 3/16/2024 12:00:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Services](
+	[Service_ID] [int] IDENTITY(1,1) NOT NULL,
+	[Service] [varchar](100) NOT NULL,
+	[Cost] [decimal](10, 2) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Service_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tech_to_Services]    Script Date: 3/16/2024 12:00:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tech_to_Services](
+	[Tech_Service_ID] [int] IDENTITY(1,1) NOT NULL,
+	[Tech_ID] [int] NULL,
+	[Service_ID] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Tech_Service_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Technician]    Script Date: 3/16/2024 12:00:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Technician](
+	[Tech_ID] [int] IDENTITY(1,1) NOT NULL,
+	[Tech_FN] [varchar](50) NOT NULL,
+	[Tech_LN] [varchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Tech_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Car]  WITH CHECK ADD FOREIGN KEY([MakeID])
+REFERENCES [dbo].[Make] ([MakeID])
+GO
+ALTER TABLE [dbo].[Car]  WITH CHECK ADD FOREIGN KEY([ModelID])
+REFERENCES [dbo].[Model] ([ModelID])
+GO
+ALTER TABLE [dbo].[Car_Service_Date_Services]  WITH CHECK ADD  CONSTRAINT [FK_Car_Service_Date_Services_Cust_Car_Servie_Date_Time] FOREIGN KEY([Cust_Car_Date_ID])
+REFERENCES [dbo].[Cust_Car_Servie_Date_Time] ([Cust_Car_Date_ID])
+GO
+ALTER TABLE [dbo].[Car_Service_Date_Services] CHECK CONSTRAINT [FK_Car_Service_Date_Services_Cust_Car_Servie_Date_Time]
+GO
+ALTER TABLE [dbo].[Car_Service_Date_Services]  WITH CHECK ADD  CONSTRAINT [FK_Car_Service_Date_Services_Tech_to_Services] FOREIGN KEY([Tech_Service_ID])
+REFERENCES [dbo].[Tech_to_Services] ([Tech_Service_ID])
+GO
+ALTER TABLE [dbo].[Car_Service_Date_Services] CHECK CONSTRAINT [FK_Car_Service_Date_Services_Tech_to_Services]
+GO
+ALTER TABLE [dbo].[CarOwner]  WITH CHECK ADD FOREIGN KEY([Car_ID])
+REFERENCES [dbo].[Car] ([Car_ID])
+GO
+ALTER TABLE [dbo].[CarOwner]  WITH CHECK ADD FOREIGN KEY([Cust_ID])
+REFERENCES [dbo].[Customer] ([Cust_ID])
+GO
+ALTER TABLE [dbo].[Cust_Car_Servie_Date_Time]  WITH CHECK ADD FOREIGN KEY([Cust_Car_ID])
+REFERENCES [dbo].[CarOwner] ([Cust_Car_ID])
+GO
+ALTER TABLE [dbo].[Tech_to_Services]  WITH CHECK ADD FOREIGN KEY([Service_ID])
+REFERENCES [dbo].[Services] ([Service_ID])
+GO
+ALTER TABLE [dbo].[Tech_to_Services]  WITH CHECK ADD FOREIGN KEY([Tech_ID])
+REFERENCES [dbo].[Technician] ([Tech_ID])
+GO
+
