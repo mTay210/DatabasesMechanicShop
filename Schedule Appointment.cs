@@ -38,5 +38,10 @@ namespace MechanicShop
             // Optionally, hide or close Form1
             this.Hide();
         }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
