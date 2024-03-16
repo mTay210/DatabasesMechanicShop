@@ -1,0 +1,7 @@
+ALTER TABLE Customer
+ADD CONSTRAINT unique_phone_number
+UNIQUE (Phone);
+
+ALTER TABLE Car
+ADD CONSTRAINT unique_license_plate
+UNIQUE (LicensePlate);
