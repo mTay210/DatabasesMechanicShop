@@ -49,6 +49,8 @@
             label8 = new Label();
             textBox4 = new TextBox();
             button3 = new Button();
+            comboBox4 = new ComboBox();
+            label9 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -136,18 +138,17 @@
             // 
             // button2
             // 
-            button2.Location = new Point(441, 370);
+            button2.Location = new Point(715, 370);
             button2.Name = "button2";
             button2.Size = new Size(138, 23);
             button2.TabIndex = 21;
             button2.Text = "Submit Appointment";
             button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(251, 344);
+            label4.Location = new Point(301, 344);
             label4.Name = "label4";
             label4.Size = new Size(85, 15);
             label4.TabIndex = 20;
@@ -165,7 +166,7 @@
             // comboBox3
             // 
             comboBox3.FormattingEnabled = true;
-            comboBox3.Location = new Point(251, 371);
+            comboBox3.Location = new Point(301, 371);
             comboBox3.Name = "comboBox3";
             comboBox3.Size = new Size(171, 23);
             comboBox3.TabIndex = 18;
@@ -175,7 +176,7 @@
             // 
             dateTimePicker1.Location = new Point(19, 371);
             dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(200, 23);
+            dateTimePicker1.Size = new Size(247, 23);
             dateTimePicker1.TabIndex = 17;
             // 
             // label6
@@ -239,11 +240,32 @@
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
+            // comboBox4
+            // 
+            comboBox4.FormattingEnabled = true;
+            comboBox4.Location = new Point(519, 370);
+            comboBox4.Name = "comboBox4";
+            comboBox4.Size = new Size(169, 23);
+            comboBox4.TabIndex = 29;
+            comboBox4.SelectedIndexChanged += comboBox4_SelectedIndexChanged;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(519, 344);
+            label9.Name = "label9";
+            label9.Size = new Size(97, 15);
+            label9.TabIndex = 30;
+            label9.Text = "Select Technician";
+            label9.Click += label9_Click;
+            // 
             // Form3
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(879, 410);
+            Controls.Add(label9);
+            Controls.Add(comboBox4);
             Controls.Add(button3);
             Controls.Add(textBox4);
             Controls.Add(label8);
@@ -295,5 +317,7 @@
         private Label label8;
         private TextBox textBox4;
         private Button button3;
+        private ComboBox comboBox4;
+        private Label label9;
     }
 }

@@ -19,7 +19,40 @@ namespace MechanicShop
             PopulateServicesComboBox();
         }
 
-        // Populates the Services combobox
+        // Populate the technicians combo box with all technicians available for the selected service
+        private void PopulateTechniciansComboBox(int serviceID)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = @"SELECT DISTINCT T.Tech_ID, T.Tech_FN, T.Tech_LN 
+                             FROM Technician T 
+                             INNER JOIN Tech_to_Services TS ON T.Tech_ID = TS.Tech_ID 
+                             WHERE TS.Service_ID = @ServiceID";
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
+                    adapter.SelectCommand.Parameters.AddWithValue("@ServiceID", serviceID);
+
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    dt.Columns.Add("FullName", typeof(string), "Tech_FN + ' ' + Tech_LN");
+
+                    comboBox4.DisplayMember = "FullName";
+                    comboBox4.ValueMember = "Tech_ID";
+                    comboBox4.DataSource = dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
+
+        // Populates the Services combobox and send the selected service ID to the PopulateTechniciansComboBox method
         private void PopulateServicesComboBox()
         {
             try
@@ -35,6 +68,16 @@ namespace MechanicShop
                     comboBox3.DisplayMember = "Service";
                     comboBox3.ValueMember = "Service_ID";
                     comboBox3.DataSource = dt;
+
+                    // Add event handler for SelectedIndexChanged
+                    comboBox3.SelectedIndexChanged += (sender, e) =>
+                    {
+                        if (comboBox3.SelectedValue != null && comboBox3.SelectedValue != DBNull.Value)
+                        {
+                            int selectedServiceID = Convert.ToInt32(comboBox3.SelectedValue);
+                            PopulateTechniciansComboBox(selectedServiceID);
+                        }
+                    };
                 }
             }
             catch (Exception ex)
@@ -42,6 +85,7 @@ namespace MechanicShop
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
+
 
         // Populates the Model combobox based on the selected Make
         private void PopulateModelComboBox()
@@ -196,19 +240,6 @@ namespace MechanicShop
                     }
                 }
             }
-        }
-
-        // Method to open the form to assign the technician
-        private void button2_Click(object sender, EventArgs e)
-        {
-            // Create an instance of Form2 
-            Technician form2 = new Technician();
-
-            // Show Form2
-            form2.Show(); ;
-
-            // Optionally, hide or close the Schedule_Appointment form
-            //this.Hide();
         }
 
         // Method to go back to the home page
@@ -387,6 +418,16 @@ namespace MechanicShop
         }
 
         private void Form3_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
