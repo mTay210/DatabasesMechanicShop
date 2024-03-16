@@ -259,6 +259,58 @@ namespace MechanicShop
                             textBox4.Text = reader["Phone"].ToString();
 
                             MessageBox.Show("Customer found.");
+
+                            // Close the reader before executing the second query
+                            reader.Close();
+
+                            // Now execute the SQL query to retrieve service information
+                            string serviceQuery = @"
+                        SELECT
+                            M.Make AS Car_Make,
+                            MD.Model AS Car_Model,
+                            Ca.LicensePlate AS Car_License_Plate,
+                            CCSDT.ServiceDate AS Service_Date,
+                            CCSDT.ServiceTime AS Service_Time,
+                            S.Service AS Service_Name,
+                            S.Cost AS Service_Cost,
+                            CONCAT(T.Tech_FN, ' ', T.Tech_LN) AS Technician_Name
+                        FROM
+                            CarOwner CO
+                            INNER JOIN Car Ca ON CO.Car_ID = Ca.Car_ID
+                            INNER JOIN Cust_Car_Service_Date_Time CCSDT ON CO.Cust_Car_ID = CCSDT.Cust_Car_ID
+                            INNER JOIN Car_Service_Date_Services CSDS ON CCSDT.Cust_Car_Date_ID = CSDS.Cust_Car_Date_ID
+                            INNER JOIN Tech_to_Services TS ON CSDS.Tech_Service_ID = TS.Tech_Service_ID
+                            INNER JOIN Services S ON TS.Service_ID = S.Service_ID
+                            INNER JOIN Technician T ON TS.Tech_ID = T.Tech_ID
+                            INNER JOIN Make M ON Ca.MakeID = M.MakeID
+                            INNER JOIN Model MD ON Ca.ModelID = MD.ModelID
+                        WHERE
+                            CO.Cust_ID = @CustID";
+
+                            // Create a new SqlCommand object for the service query
+                            using (SqlCommand serviceCommand = new SqlCommand(serviceQuery, connection))
+                            {
+                                // Add parameter for customer ID
+                                serviceCommand.Parameters.AddWithValue("@CustID", GetCustomerID(phoneNumber));
+
+                                // Execute the service query and populate a DataTable
+                                SqlDataAdapter adapter = new SqlDataAdapter(serviceCommand);
+                                DataTable dt = new DataTable();
+                                adapter.Fill(dt);
+
+                                // Modify column headers
+                                dt.Columns["Car_Make"].ColumnName = "Make";
+                                dt.Columns["Car_Model"].ColumnName = "Model";
+                                dt.Columns["Car_License_Plate"].ColumnName = "License Plate";
+                                dt.Columns["Service_Date"].ColumnName = "Date";
+                                dt.Columns["Service_Time"].ColumnName = "Time";
+                                dt.Columns["Service_Name"].ColumnName = "Service";
+                                dt.Columns["Service_Cost"].ColumnName = "Cost";
+                                dt.Columns["Technician_Name"].ColumnName = "Technician";
+
+                                // Bind the DataTable to the dataGridView1
+                                dataGridView1.DataSource = dt;
+                            }
                         }
                         else
                         {
@@ -278,6 +330,10 @@ namespace MechanicShop
 
 
 
+
+
+
+        // Could not delete this without cause the Design window to break and complain about errors.
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -315,6 +371,11 @@ namespace MechanicShop
         }
 
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form3_Load(object sender, EventArgs e)
         {
 
         }
