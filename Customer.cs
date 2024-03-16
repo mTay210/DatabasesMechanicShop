@@ -7,8 +7,10 @@ namespace MechanicShop
 {
     public partial class Form3 : Form
     {
+        // Connections to the server and database
         private const string connectionString = "Server=localhost\\SQLEXPRESS;Database=MechanicShop;Integrated Security=SSPI;";
 
+        // Constructor
         public Form3()
         {
             InitializeComponent();
@@ -17,6 +19,7 @@ namespace MechanicShop
             PopulateServicesComboBox();
         }
 
+        // Populates the Services combobox
         private void PopulateServicesComboBox()
         {
             try
@@ -40,7 +43,7 @@ namespace MechanicShop
             }
         }
 
-
+        // Populates the Model combobox based on the selected Make
         private void PopulateModelComboBox()
         {
             try
@@ -64,6 +67,7 @@ namespace MechanicShop
             }
         }
 
+        // Method to populate the Make combobox
         private void PopulateMakeComboBox()
         {
             try
@@ -87,6 +91,7 @@ namespace MechanicShop
             }
         }
 
+        // Adds a new car to the database and links it to the customer
         private void button1_Click(object sender, EventArgs e)
         {
             try
@@ -103,6 +108,7 @@ namespace MechanicShop
                 {
                     connection.Open();
 
+                    // Create a SqlCommand object with the query and connection
                     using (SqlCommand command = new SqlCommand(carQuery, connection))
                     {
                         command.Parameters.AddWithValue("@MakeID", selectedMakeID);
@@ -192,6 +198,7 @@ namespace MechanicShop
             }
         }
 
+        // Method to open the form to assign the technician
         private void button2_Click(object sender, EventArgs e)
         {
             // Create an instance of Form2 
@@ -204,6 +211,7 @@ namespace MechanicShop
             //this.Hide();
         }
 
+        // Method to go back to the home page
         private void button4_Click(object sender, EventArgs e)
         {
             // Create an instance of Form2 
@@ -216,6 +224,7 @@ namespace MechanicShop
             this.Hide();
         }
 
+        // Method to search for a customer based on phone number and display their service history
         private void button3_Click(object sender, EventArgs e)
         {
             string phoneNumber = textBox4.Text;
@@ -263,29 +272,29 @@ namespace MechanicShop
                             // Close the reader before executing the second query
                             reader.Close();
 
-                            // Now execute the SQL query to retrieve service information
+                            // Execute the SQL query to retrieve service information
                             string serviceQuery = @"
-                        SELECT
-                            M.Make AS Car_Make,
-                            MD.Model AS Car_Model,
-                            Ca.LicensePlate AS Car_License_Plate,
-                            CCSDT.ServiceDate AS Service_Date,
-                            CCSDT.ServiceTime AS Service_Time,
-                            S.Service AS Service_Name,
-                            S.Cost AS Service_Cost,
-                            CONCAT(T.Tech_FN, ' ', T.Tech_LN) AS Technician_Name
-                        FROM
-                            CarOwner CO
-                            INNER JOIN Car Ca ON CO.Car_ID = Ca.Car_ID
-                            INNER JOIN Cust_Car_Service_Date_Time CCSDT ON CO.Cust_Car_ID = CCSDT.Cust_Car_ID
-                            INNER JOIN Car_Service_Date_Services CSDS ON CCSDT.Cust_Car_Date_ID = CSDS.Cust_Car_Date_ID
-                            INNER JOIN Tech_to_Services TS ON CSDS.Tech_Service_ID = TS.Tech_Service_ID
-                            INNER JOIN Services S ON TS.Service_ID = S.Service_ID
-                            INNER JOIN Technician T ON TS.Tech_ID = T.Tech_ID
-                            INNER JOIN Make M ON Ca.MakeID = M.MakeID
-                            INNER JOIN Model MD ON Ca.ModelID = MD.ModelID
-                        WHERE
-                            CO.Cust_ID = @CustID";
+                                SELECT
+                                    M.Make AS Car_Make,
+                                    MD.Model AS Car_Model,
+                                    Ca.LicensePlate AS Car_License_Plate,
+                                    CCSDT.ServiceDate AS Service_Date,
+                                    CCSDT.ServiceTime AS Service_Time,
+                                    S.Service AS Service_Name,
+                                    S.Cost AS Service_Cost,
+                                    CONCAT(T.Tech_FN, ' ', T.Tech_LN) AS Technician_Name
+                                FROM
+                                    CarOwner CO
+                                    INNER JOIN Car Ca ON CO.Car_ID = Ca.Car_ID
+                                    INNER JOIN Cust_Car_Service_Date_Time CCSDT ON CO.Cust_Car_ID = CCSDT.Cust_Car_ID
+                                    INNER JOIN Car_Service_Date_Services CSDS ON CCSDT.Cust_Car_Date_ID = CSDS.Cust_Car_Date_ID
+                                    INNER JOIN Tech_to_Services TS ON CSDS.Tech_Service_ID = TS.Tech_Service_ID
+                                    INNER JOIN Services S ON TS.Service_ID = S.Service_ID
+                                    INNER JOIN Technician T ON TS.Tech_ID = T.Tech_ID
+                                    INNER JOIN Make M ON Ca.MakeID = M.MakeID
+                                    INNER JOIN Model MD ON Ca.ModelID = MD.ModelID
+                                WHERE
+                                    CO.Cust_ID = @CustID";
 
                             // Create a new SqlCommand object for the service query
                             using (SqlCommand serviceCommand = new SqlCommand(serviceQuery, connection))
@@ -332,8 +341,10 @@ namespace MechanicShop
 
 
 
-
-        // Could not delete this without cause the Design window to break and complain about errors.
+        /*
+         * Could not delete these without cause the Design window to break and complain about errors.
+         * Ignore everything below this comment, but DO NOT delete it or comment it out.
+         */
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {

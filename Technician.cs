@@ -7,14 +7,17 @@ namespace MechanicShop
 {
     public partial class Technician : Form
     {
+        // Connect to the server and database
         private const string connectionString = "Server=localhost\\SQLEXPRESS;Database=MechanicShop;Integrated Security=SSPI;";
 
+        // Constructor
         public Technician()
         {
             InitializeComponent();
             PopulateTechniciansComboBox();
         }
 
+        // Populate the technicians combo box
         private void PopulateTechniciansComboBox()
         {
             try
@@ -27,7 +30,8 @@ namespace MechanicShop
                     DataTable dt = new DataTable();
                     adapter.Fill(dt);
 
-                    dt.Columns.Add("FullName", typeof(string), "Tech_FN + ' ' + Tech_LN"); // Concatenate first name and last name into FullName column
+                    // Combine first name and last name into FullName column
+                    dt.Columns.Add("FullName", typeof(string), "Tech_FN + ' ' + Tech_LN"); 
 
                     comboBox1.DisplayMember = "FullName"; // Use FullName as the DisplayMember
                     comboBox1.ValueMember = "Tech_ID";

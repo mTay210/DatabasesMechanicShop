@@ -6,6 +6,7 @@ namespace MechanicShop
 {
     public partial class Form1 : Form
     {
+        // Connect to the server and database
         private const string connectionString = "Server=localhost\\SQLEXPRESS;Database=MechanicShop;Integrated Security=SSPI;";
 
         public Form1()
@@ -63,13 +64,20 @@ namespace MechanicShop
             }
         }
 
-
+        // This method is used to open the Customer form
         private void button2_Click(object sender, EventArgs e)
         {
             Form3 form3 = new Form3();
             form3.Show();
+
+            // Close the home page
             this.Hide();
         }
+
+        /*
+         * Could not delete these without cause the Design window to break and complain about errors.
+         * Ignore everything below this comment, but DO NOT delete it or comment it out.
+         */
 
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
