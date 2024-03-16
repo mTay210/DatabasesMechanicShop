@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace MechanicShop
@@ -265,89 +266,45 @@ namespace MechanicShop
         {
             try
             {
-                // Get the selected technician ID
-                int techID = GetTechnicianID(comboBox4.Text);
+                // Get the selected customer's last car ID
+                int custCarID = GetCustomerCarID(textBox4.Text);
 
-                if (techID > 0)
+                if (custCarID > 0)
                 {
-                    // Get the selected customer's last car ID
-                    int custCarID = GetCustomerCarID(textBox4.Text);
+                    // Get the appointment date and time from DateTimePicker
+                    DateTime appointmentDateTime = dateTimePicker1.Value;
 
-                    if (custCarID > 0)
+                    // SQL query to insert appointment data into Cust_Car_Service_Date_Time table
+                    string insertQuery = @"
+                                    INSERT INTO Cust_Car_Service_Date_Time (Cust_Car_ID, ServiceDate, ServiceTime) 
+                                    VALUES (@CustCarID, @AppointmentDate, @AppointmentTime)";                           
+
+                    using (SqlConnection connection = new SqlConnection(connectionString))
                     {
-                        // Get the appointment date and time from DateTimePicker
-                        DateTime appointmentDateTime = dateTimePicker1.Value;
+                        connection.Open();
 
-                        // SQL query to insert appointment data into Cust_Car_Service_Date_Time table
-                        string insertQuery = @"
-                                INSERT INTO Cust_Car_Service_Date_Time (Cust_Car_ID, ServiceDate, ServiceTime) 
-                                VALUES (@CustCarID, @AppointmentDate, @AppointmentTime);
-                                SELECT SCOPE_IDENTITY();"; // This will return the newly inserted Cust_Car_Date_ID
-
-                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        using (SqlCommand command = new SqlCommand(insertQuery, connection))
                         {
-                            connection.Open();
+                            command.Parameters.AddWithValue("@CustCarID", custCarID);
+                            command.Parameters.AddWithValue("@AppointmentDate", appointmentDateTime.Date);
+                            command.Parameters.AddWithValue("@AppointmentTime", appointmentDateTime.TimeOfDay);
 
-                            using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
                             {
-                                command.Parameters.AddWithValue("@CustCarID", custCarID);
-                                command.Parameters.AddWithValue("@AppointmentDate", appointmentDateTime.Date);
-                                command.Parameters.AddWithValue("@AppointmentTime", appointmentDateTime.TimeOfDay);
-
-                                // ExecuteScalar to get the newly inserted Cust_Car_Date_ID
-                                int custCarDateID = Convert.ToInt32(command.ExecuteScalar());
-
-                                // Check if Cust_Car_Date_ID was retrieved successfully
-                                if (custCarDateID > 0)
-                                {
-                                    // Now we need to get the Tech_Service_ID from Tech_to_Services based on the selected service
-                                    int serviceID = Convert.ToInt32(comboBox3.SelectedValue);
-                                    int techServiceID = GetTechServiceID(techID, serviceID);
-
-                                    if (techServiceID > 0)
-                                    {
-                                        // SQL query to insert data into Car_Service_Date_Services table
-                                        string serviceQuery = @"
-                                            INSERT INTO Car_Service_Date_Services (Cust_Car_Date_ID, Tech_Service_ID) 
-                                            VALUES (@CustCarDateID, @TechServiceID)";
-
-                                        using (SqlCommand serviceCommand = new SqlCommand(serviceQuery, connection))
-                                        {
-                                            serviceCommand.Parameters.AddWithValue("@CustCarDateID", custCarDateID);
-                                            serviceCommand.Parameters.AddWithValue("@TechServiceID", techServiceID);
-
-                                            int rowsAffected = serviceCommand.ExecuteNonQuery();
-
-                                            if (rowsAffected > 0)
-                                            {
-                                                MessageBox.Show("Appointment scheduled successfully and added to Car_Service_Date_Services table!");
-                                            }
-                                            else
-                                            {
-                                                MessageBox.Show("Error adding appointment to Car_Service_Date_Services table.");
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("Error: Tech_Service_ID not found.");
-                                    }
-                                }
-                                else
-                                {
-                                    MessageBox.Show("Error getting Cust_Car_Date_ID.");
-                                }
+                                MessageBox.Show("Appointment scheduled successfully and added to Cust_Car_Service_Date_Time table!");
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error adding appointment to Cust_Car_Service_Date_Time table.");
                             }
                         }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error: Could not find a car associated with the customer.");
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Error: Technician ID not found.");
+                    MessageBox.Show("Error: Could not find a car associated with the customer.");
                 }
             }
             catch (Exception ex)
@@ -355,6 +312,7 @@ namespace MechanicShop
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
+
 
         // Method to get the Tech_Service_ID based on Tech_ID and Service_ID
         private int GetTechServiceID(int techID, int serviceID)
@@ -437,10 +395,10 @@ namespace MechanicShop
 
                         // SQL query to get the latest car ID associated with the customer
                         string query = @"
-                    SELECT TOP 1 Car_ID 
-                    FROM CarOwner 
-                    WHERE Cust_ID = @CustID 
-                    ORDER BY Cust_Car_ID DESC";
+                                SELECT TOP 1 Car_ID 
+                                FROM CarOwner 
+                                WHERE Cust_ID = @CustID 
+                                ORDER BY Cust_Car_ID DESC";
 
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
@@ -484,22 +442,20 @@ namespace MechanicShop
                 return; // Exit the method without further execution
             }
 
-            // SQL query to select customer information based on phone number
-            string query = "SELECT Cust_FN, Cust_LN, Phone FROM Customer WHERE Phone = @PhoneNumber";
-
-            // Create a SqlConnection object using the connection string
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            try
             {
-                // Create a SqlCommand object with the query and connection
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    // Add parameter to prevent SQL injection
-                    command.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+                    connection.Open();
 
-                    try
+                    // SQL query to select customer information based on phone number
+                    string query = "SELECT Cust_ID, Cust_FN, Cust_LN FROM Customer WHERE Phone = @PhoneNumber";
+
+                    // Create a SqlCommand object with the query and connection
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        // Open the connection
-                        connection.Open();
+                        // Add parameter to prevent SQL injection
+                        command.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
 
                         // Execute the command and get the SqlDataReader
                         SqlDataReader reader = command.ExecuteReader();
@@ -513,42 +469,42 @@ namespace MechanicShop
                             // Set the values in Form3 textboxes
                             textBox2.Text = reader["Cust_FN"].ToString();
                             textBox3.Text = reader["Cust_LN"].ToString();
-                            textBox4.Text = reader["Phone"].ToString();
 
-                            MessageBox.Show("Customer found.");
+                            // Get the customer ID for further queries
+                            int custID = Convert.ToInt32(reader["Cust_ID"]);
 
                             // Close the reader before executing the second query
                             reader.Close();
 
-                            // Execute the SQL query to retrieve service information
+                            // SQL query to retrieve service information for the customer
                             string serviceQuery = @"
-                                SELECT
-                                    M.Make AS Car_Make,
-                                    MD.Model AS Car_Model,
-                                    Ca.LicensePlate AS Car_License_Plate,
-                                    CCSDT.ServiceDate AS Service_Date,
-                                    CCSDT.ServiceTime AS Service_Time,
-                                    S.Service AS Service_Name,
-                                    S.Cost AS Service_Cost,
-                                    CONCAT(T.Tech_FN, ' ', T.Tech_LN) AS Technician_Name
-                                FROM
-                                    CarOwner CO
-                                    INNER JOIN Car Ca ON CO.Car_ID = Ca.Car_ID
-                                    INNER JOIN Cust_Car_Service_Date_Time CCSDT ON CO.Cust_Car_ID = CCSDT.Cust_Car_ID
-                                    INNER JOIN Car_Service_Date_Services CSDS ON CCSDT.Cust_Car_Date_ID = CSDS.Cust_Car_Date_ID
-                                    INNER JOIN Tech_to_Services TS ON CSDS.Tech_Service_ID = TS.Tech_Service_ID
-                                    INNER JOIN Services S ON TS.Service_ID = S.Service_ID
-                                    INNER JOIN Technician T ON TS.Tech_ID = T.Tech_ID
-                                    INNER JOIN Make M ON Ca.MakeID = M.MakeID
-                                    INNER JOIN Model MD ON Ca.ModelID = MD.ModelID
-                                WHERE
-                                    CO.Cust_ID = @CustID";
+                        SELECT
+                            M.Make AS Car_Make,
+                            MD.Model AS Car_Model,
+                            Ca.LicensePlate AS Car_License_Plate,
+                            CONVERT(VARCHAR(10), CCSDT.ServiceDate, 120) AS Service_Date, -- Format as yyyy-mm-dd
+                            CONVERT(VARCHAR(8), CCSDT.ServiceTime, 108) AS Service_Time, -- Format as HH:MM:SS
+                            S.Service AS Service_Name,
+                            S.Cost AS Service_Cost,
+                            CONCAT(T.Tech_FN, ' ', T.Tech_LN) AS Technician_Name
+                        FROM
+                            CarOwner CO
+                            INNER JOIN Car Ca ON CO.Car_ID = Ca.Car_ID
+                            INNER JOIN Cust_Car_Service_Date_Time CCSDT ON CO.Cust_Car_ID = CCSDT.Cust_Car_ID
+                            INNER JOIN Car_Service_Date_Services CSDS ON CCSDT.Cust_Car_Date_ID = CSDS.Cust_Car_Date_ID
+                            INNER JOIN Tech_to_Services TS ON CSDS.Tech_Service_ID = TS.Tech_Service_ID
+                            INNER JOIN Services S ON TS.Service_ID = S.Service_ID
+                            INNER JOIN Technician T ON TS.Tech_ID = T.Tech_ID
+                            INNER JOIN Make M ON Ca.MakeID = M.MakeID
+                            INNER JOIN Model MD ON Ca.ModelID = MD.ModelID
+                        WHERE
+                            CO.Cust_ID = @CustID";
 
                             // Create a new SqlCommand object for the service query
                             using (SqlCommand serviceCommand = new SqlCommand(serviceQuery, connection))
                             {
                                 // Add parameter for customer ID
-                                serviceCommand.Parameters.AddWithValue("@CustID", GetCustomerID(phoneNumber));
+                                serviceCommand.Parameters.AddWithValue("@CustID", custID);
 
                                 // Execute the service query and populate a DataTable
                                 SqlDataAdapter adapter = new SqlDataAdapter(serviceCommand);
@@ -565,8 +521,43 @@ namespace MechanicShop
                                 dt.Columns["Service_Cost"].ColumnName = "Cost";
                                 dt.Columns["Technician_Name"].ColumnName = "Technician";
 
-                                // Bind the DataTable to the dataGridView1
+                                // Iterate through each row in the DataTable to parse datetime values
+                                foreach (DataRow row in dt.Rows)
+                                {
+                                    // Assuming Service_Date and Service_Time are retrieved as strings from the database
+                                    string serviceDate = row["Date"].ToString();
+                                    string serviceTime = row["Time"].ToString();
+
+                                    // Parse the date and time strings using DateTime.TryParseExact with the correct format
+                                    DateTime parsedDate, parsedTime;
+                                    if (DateTime.TryParseExact(serviceDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate)
+                                        && DateTime.TryParseExact(serviceTime, "HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedTime))
+                                    {
+                                        // Format the date without time
+                                        string formattedDate = parsedDate.ToString("MM-dd-yyyy");
+
+                                        // Format the time without seconds
+                                        string formattedTime = parsedTime.ToString("HH:mm");
+
+                                        // Assign the formatted date and time values back to the DataGridView columns
+                                        row["Date"] = formattedDate; // Assuming you have a column named "Date"
+                                        row["Time"] = formattedTime; // Assuming you have a column named "Time"
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Error parsing datetime values from the database.");
+                                    }
+
+                                }
+
+                                // Bind the DataTable with updated datetime values to the dataGridView1
                                 dataGridView1.DataSource = dt;
+
+                                // Optional: Display a message if no service records are found
+                                if (dt.Rows.Count == 0)
+                                {
+                                    MessageBox.Show("No service records found for the customer.");
+                                }
                             }
                         }
                         else
@@ -577,13 +568,15 @@ namespace MechanicShop
                         // Close the reader
                         reader.Close();
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occurred: " + ex.Message);
-                    }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message);
+            }
         }
+
+
 
 
 
