@@ -1,0 +1,54 @@
+INSERT INTO Make (Make) VALUES 
+('Toyota'),
+('Ford'),
+('Chevrolet'),
+('Honda'),
+('Nissan'),
+('BMW'),
+('Mercedes-Benz'),
+('Audi'),
+('Hyundai'),
+('Subaru'),
+('Honda');
+
+INSERT INTO Model (Model) VALUES 
+('Sedan'),
+('SUV'),
+('Truck'),
+('Coupe'),
+('Convertible'),
+('Hatchback'),
+('Wagon'),
+('Minivan'),
+('Pickup'),
+('Van');
+
+-- Insert 5 technicians
+INSERT INTO Technician (Tech_FN, Tech_LN) VALUES
+('John', 'Smith'),
+('Michael', 'Johnson'),
+('William', 'Williams'),
+('James', 'Brown'),
+('Robert', 'Davis');
+
+-- Insert 5 services
+INSERT INTO Services (Service, Cost) VALUES
+('Oil Change', 50),
+('Brake Inspection', 75),
+('Tire Rotation', 30),
+('Engine Tune-Up', 150),
+('Wheel Alignment', 80);
+
+-- Assign Tech_ID to Service_ID in Tech_to_Service table (at least 10 entries)
+INSERT INTO Tech_to_Services (Tech_ID, Service_ID) VALUES
+(1, 1), -- John Smith performs Oil Change
+(2, 2), -- Michael Johnson performs Brake Inspection
+(3, 3), -- William Williams performs Tire Rotation
+(4, 4), -- James Brown performs Engine Tune-Up
+(5, 5), -- Robert Davis performs Wheel Alignment
+(1, 2), -- John Smith also performs Brake Inspection
+(2, 3), -- Michael Johnson also performs Tire Rotation
+(3, 4), -- William Williams also performs Engine Tune-Up
+(4, 5), -- James Brown also performs Wheel Alignment
+(5, 1); -- Robert Davis also performs Oil Change
+

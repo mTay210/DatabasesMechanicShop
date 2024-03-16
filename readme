@@ -42,12 +42,12 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Cust_Car_Servie_Date_Time]    Script Date: 3/16/2024 12:00:15 PM ******/
+/****** Object:  Table [dbo].[Cust_Car_Service_Date_Time]    Script Date: 3/16/2024 12:00:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[Cust_Car_Servie_Date_Time](
+CREATE TABLE [dbo].[Cust_Car_Service_Date_Time](
 	[Cust_Car_Date_ID] [int] IDENTITY(1,1) NOT NULL,
 	[Cust_Car_ID] [int] NULL,
 	[ServiceDate] [date] NOT NULL,
@@ -153,10 +153,10 @@ GO
 ALTER TABLE [dbo].[Car]  WITH CHECK ADD FOREIGN KEY([ModelID])
 REFERENCES [dbo].[Model] ([ModelID])
 GO
-ALTER TABLE [dbo].[Car_Service_Date_Services]  WITH CHECK ADD  CONSTRAINT [FK_Car_Service_Date_Services_Cust_Car_Servie_Date_Time] FOREIGN KEY([Cust_Car_Date_ID])
-REFERENCES [dbo].[Cust_Car_Servie_Date_Time] ([Cust_Car_Date_ID])
+ALTER TABLE [dbo].[Car_Service_Date_Services]  WITH CHECK ADD  CONSTRAINT [FK_Car_Service_Date_Services_Cust_Car_Service_Date_Time] FOREIGN KEY([Cust_Car_Date_ID])
+REFERENCES [dbo].[Cust_Car_Service_Date_Time] ([Cust_Car_Date_ID])
 GO
-ALTER TABLE [dbo].[Car_Service_Date_Services] CHECK CONSTRAINT [FK_Car_Service_Date_Services_Cust_Car_Servie_Date_Time]
+ALTER TABLE [dbo].[Car_Service_Date_Services] CHECK CONSTRAINT [FK_Car_Service_Date_Services_Cust_Car_Service_Date_Time]
 GO
 ALTER TABLE [dbo].[Car_Service_Date_Services]  WITH CHECK ADD  CONSTRAINT [FK_Car_Service_Date_Services_Tech_to_Services] FOREIGN KEY([Tech_Service_ID])
 REFERENCES [dbo].[Tech_to_Services] ([Tech_Service_ID])
@@ -169,7 +169,7 @@ GO
 ALTER TABLE [dbo].[CarOwner]  WITH CHECK ADD FOREIGN KEY([Cust_ID])
 REFERENCES [dbo].[Customer] ([Cust_ID])
 GO
-ALTER TABLE [dbo].[Cust_Car_Servie_Date_Time]  WITH CHECK ADD FOREIGN KEY([Cust_Car_ID])
+ALTER TABLE [dbo].[Cust_Car_Service_Date_Time]  WITH CHECK ADD FOREIGN KEY([Cust_Car_ID])
 REFERENCES [dbo].[CarOwner] ([Cust_Car_ID])
 GO
 ALTER TABLE [dbo].[Tech_to_Services]  WITH CHECK ADD FOREIGN KEY([Service_ID])
