@@ -147,7 +147,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(266, 344);
+            label4.Location = new Point(251, 344);
             label4.Name = "label4";
             label4.Size = new Size(85, 15);
             label4.TabIndex = 20;
@@ -165,10 +165,11 @@
             // comboBox3
             // 
             comboBox3.FormattingEnabled = true;
-            comboBox3.Location = new Point(266, 371);
+            comboBox3.Location = new Point(251, 371);
             comboBox3.Name = "comboBox3";
-            comboBox3.Size = new Size(121, 23);
+            comboBox3.Size = new Size(171, 23);
             comboBox3.TabIndex = 18;
+            comboBox3.SelectedIndexChanged += comboBox3_SelectedIndexChanged;
             // 
             // dateTimePicker1
             // 

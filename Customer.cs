@@ -14,7 +14,32 @@ namespace MechanicShop
             InitializeComponent();
             PopulateModelComboBox();
             PopulateMakeComboBox();
+            PopulateServicesComboBox();
         }
+
+        private void PopulateServicesComboBox()
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = "SELECT Service_ID, Service FROM Services";
+                    SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    comboBox3.DisplayMember = "Service";
+                    comboBox3.ValueMember = "Service_ID";
+                    comboBox3.DataSource = dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
 
         private void PopulateModelComboBox()
         {
@@ -92,14 +117,8 @@ namespace MechanicShop
                 // Check if Car_ID was retrieved successfully
                 if (carID > 0)
                 {
-                    // Debugging message to check carID
-                    MessageBox.Show("Car ID: " + carID);
-
                     // Get the Cust_ID from the searched customer
                     int custID = GetCustomerID(textBox4.Text);
-
-                    // Debugging message to check custID
-                    MessageBox.Show("Cust ID: " + custID);
 
                     if (custID > 0)
                     {
@@ -175,7 +194,14 @@ namespace MechanicShop
 
         private void button2_Click(object sender, EventArgs e)
         {
-            // Code for button2_Click
+            // Create an instance of Form2 
+            Technician form2 = new Technician();
+
+            // Show Form2
+            form2.Show(); ;
+
+            // Optionally, hide or close the Schedule_Appointment form
+            //this.Hide();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -286,6 +312,11 @@ namespace MechanicShop
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
             // Code for textBox4_TextChanged
+        }
+
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
