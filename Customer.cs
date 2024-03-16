@@ -17,6 +17,11 @@ namespace MechanicShop
             PopulateModelComboBox();
             PopulateMakeComboBox();
             PopulateServicesComboBox();
+
+            // Set the DateTimePicker format to Custom to display both date and time
+            dateTimePicker1.Format = DateTimePickerFormat.Custom;
+            // Set the CustomFormat to a format that includes both date and time
+            dateTimePicker1.CustomFormat = "yyyy-MM-dd HH:mm";
         }
 
         // Populate the technicians combo box with all technicians available for the selected service
@@ -254,6 +259,218 @@ namespace MechanicShop
             // Optionally, hide or close Form1
             this.Hide();
         }
+
+        // Method to submit the appointment
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Get the selected technician ID
+                int techID = GetTechnicianID(comboBox4.Text);
+
+                if (techID > 0)
+                {
+                    // Get the selected customer's last car ID
+                    int custCarID = GetCustomerCarID(textBox4.Text);
+
+                    if (custCarID > 0)
+                    {
+                        // Get the appointment date and time from DateTimePicker
+                        DateTime appointmentDateTime = dateTimePicker1.Value;
+
+                        // SQL query to insert appointment data into Cust_Car_Service_Date_Time table
+                        string insertQuery = @"
+                                INSERT INTO Cust_Car_Service_Date_Time (Cust_Car_ID, ServiceDate, ServiceTime) 
+                                VALUES (@CustCarID, @AppointmentDate, @AppointmentTime);
+                                SELECT SCOPE_IDENTITY();"; // This will return the newly inserted Cust_Car_Date_ID
+
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        {
+                            connection.Open();
+
+                            using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                            {
+                                command.Parameters.AddWithValue("@CustCarID", custCarID);
+                                command.Parameters.AddWithValue("@AppointmentDate", appointmentDateTime.Date);
+                                command.Parameters.AddWithValue("@AppointmentTime", appointmentDateTime.TimeOfDay);
+
+                                // ExecuteScalar to get the newly inserted Cust_Car_Date_ID
+                                int custCarDateID = Convert.ToInt32(command.ExecuteScalar());
+
+                                // Check if Cust_Car_Date_ID was retrieved successfully
+                                if (custCarDateID > 0)
+                                {
+                                    // Now we need to get the Tech_Service_ID from Tech_to_Services based on the selected service
+                                    int serviceID = Convert.ToInt32(comboBox3.SelectedValue);
+                                    int techServiceID = GetTechServiceID(techID, serviceID);
+
+                                    if (techServiceID > 0)
+                                    {
+                                        // SQL query to insert data into Car_Service_Date_Services table
+                                        string serviceQuery = @"
+                                            INSERT INTO Car_Service_Date_Services (Cust_Car_Date_ID, Tech_Service_ID) 
+                                            VALUES (@CustCarDateID, @TechServiceID)";
+
+                                        using (SqlCommand serviceCommand = new SqlCommand(serviceQuery, connection))
+                                        {
+                                            serviceCommand.Parameters.AddWithValue("@CustCarDateID", custCarDateID);
+                                            serviceCommand.Parameters.AddWithValue("@TechServiceID", techServiceID);
+
+                                            int rowsAffected = serviceCommand.ExecuteNonQuery();
+
+                                            if (rowsAffected > 0)
+                                            {
+                                                MessageBox.Show("Appointment scheduled successfully and added to Car_Service_Date_Services table!");
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show("Error adding appointment to Car_Service_Date_Services table.");
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Error: Tech_Service_ID not found.");
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Error getting Cust_Car_Date_ID.");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error: Could not find a car associated with the customer.");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Error: Technician ID not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
+            }
+        }
+
+        // Method to get the Tech_Service_ID based on Tech_ID and Service_ID
+        private int GetTechServiceID(int techID, int serviceID)
+        {
+            int techServiceID = 0;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = "SELECT Tech_Service_ID FROM Tech_to_Services WHERE Tech_ID = @TechID AND Service_ID = @ServiceID";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@TechID", techID);
+                        command.Parameters.AddWithValue("@ServiceID", serviceID);
+                        object result = command.ExecuteScalar();
+                        if (result != null)
+                        {
+                            techServiceID = Convert.ToInt32(result);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error getting Tech_Service_ID: " + ex.Message);
+            }
+
+            return techServiceID;
+        }
+
+
+
+        // Method to get the technician's ID
+        private int GetTechnicianID(string technicianFullName)
+        {
+            int techID = 0;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = @"SELECT Tech_ID FROM Technician WHERE CONCAT(Tech_FN, ' ', Tech_LN) = @FullName";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@FullName", technicianFullName);
+                        object result = command.ExecuteScalar();
+                        if (result != null)
+                        {
+                            techID = Convert.ToInt32(result);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error getting Technician ID: " + ex.Message);
+            }
+
+            // Display pop-up message with the technician's ID
+            MessageBox.Show("Technician ID: " + techID);
+
+            return techID;
+        }
+
+        // Method to get the customer's latest car ID
+        private int GetCustomerCarID(string phoneNumber)
+        {
+            int custID = GetCustomerID(phoneNumber); // Get the customer ID using the phone number
+
+            if (custID > 0)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        connection.Open();
+
+                        // SQL query to get the latest car ID associated with the customer
+                        string query = @"
+                    SELECT TOP 1 Car_ID 
+                    FROM CarOwner 
+                    WHERE Cust_ID = @CustID 
+                    ORDER BY Cust_Car_ID DESC";
+
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            command.Parameters.AddWithValue("@CustID", custID);
+
+                            object result = command.ExecuteScalar();
+
+                            if (result != null)
+                            {
+                                // Display pop-up message with the customer's car ID
+                                MessageBox.Show("Customer's Car ID: " + Convert.ToInt32(result));
+
+                                return Convert.ToInt32(result);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error getting customer's car ID: " + ex.Message);
+                }
+            }
+
+            // Display pop-up message if the customer or their car ID is not found
+            MessageBox.Show("Customer or Car ID not found.");
+
+            return 0; // Return 0 if the customer or their car ID is not found
+        }
+
+
 
         // Method to search for a customer based on phone number and display their service history
         private void button3_Click(object sender, EventArgs e)

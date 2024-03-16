@@ -138,12 +138,13 @@
             // 
             // button2
             // 
-            button2.Location = new Point(715, 370);
+            button2.Location = new Point(717, 373);
             button2.Name = "button2";
             button2.Size = new Size(138, 23);
             button2.TabIndex = 21;
             button2.Text = "Submit Appointment";
             button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // label4
             // 
@@ -263,7 +264,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(879, 410);
+            ClientSize = new Size(879, 489);
             Controls.Add(label9);
             Controls.Add(comboBox4);
             Controls.Add(button3);
