@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace MechanicShop
 {
@@ -34,9 +35,9 @@ namespace MechanicShop
                 {
                     connection.Open();
                     string query = @"SELECT DISTINCT T.Tech_ID, T.Tech_FN, T.Tech_LN 
-                             FROM Technician T 
-                             INNER JOIN Tech_to_Services TS ON T.Tech_ID = TS.Tech_ID 
-                             WHERE TS.Service_ID = @ServiceID";
+                     FROM Technician T 
+                     INNER JOIN Tech_to_Services TS ON T.Tech_ID = TS.Tech_ID 
+                     WHERE TS.Service_ID = @ServiceID";
 
                     SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
                     adapter.SelectCommand.Parameters.AddWithValue("@ServiceID", serviceID);
@@ -57,7 +58,6 @@ namespace MechanicShop
             }
         }
 
-
         // Populates the Services combobox and send the selected service ID to the PopulateTechniciansComboBox method
         private void PopulateServicesComboBox()
         {
@@ -70,6 +70,12 @@ namespace MechanicShop
                     SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
                     DataTable dt = new DataTable();
                     adapter.Fill(dt);
+
+                    // Create a new row with a blank item
+                    DataRow blankRow = dt.NewRow();
+                    blankRow["Service_ID"] = DBNull.Value;
+                    blankRow["Service"] = string.Empty;
+                    dt.Rows.InsertAt(blankRow, 0);
 
                     comboBox3.DisplayMember = "Service";
                     comboBox3.ValueMember = "Service_ID";
@@ -91,7 +97,6 @@ namespace MechanicShop
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
-
 
         // Populates the Model combobox based on the selected Make
         private void PopulateModelComboBox()
@@ -141,7 +146,7 @@ namespace MechanicShop
             }
         }
 
-        // Adds a new car to the database and links it to the customer
+        // Adds a new car to the database  BUT does NOT and links it to the customer if there is more than 1
         private void button1_Click(object sender, EventArgs e)
         {
             try
@@ -220,7 +225,6 @@ namespace MechanicShop
             }
         }
 
-
         // Method to get Cust_ID from phone number
         private int GetCustomerID(string phoneNumber)
         {
@@ -277,7 +281,7 @@ namespace MechanicShop
                     // SQL query to insert appointment data into Cust_Car_Service_Date_Time table
                     string insertQuery = @"
                                     INSERT INTO Cust_Car_Service_Date_Time (Cust_Car_ID, ServiceDate, ServiceTime) 
-                                    VALUES (@CustCarID, @AppointmentDate, @AppointmentTime)";                           
+                                    VALUES (@CustCarID, @AppointmentDate, @AppointmentTime)";
 
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
@@ -313,7 +317,6 @@ namespace MechanicShop
             }
         }
 
-
         // Method to get the Tech_Service_ID based on Tech_ID and Service_ID
         private int GetTechServiceID(int techID, int serviceID)
         {
@@ -344,8 +347,6 @@ namespace MechanicShop
 
             return techServiceID;
         }
-
-
 
         // Method to get the technician's ID
         private int GetTechnicianID(string technicianFullName)
@@ -428,9 +429,7 @@ namespace MechanicShop
             return 0; // Return 0 if the customer or their car ID is not found
         }
 
-
-
-        // Method to search for a customer based on phone number and display their service history
+        // Method to search for a customer based on phone number and display their service history and populate comboBox5 with their cars
         private void button3_Click(object sender, EventArgs e)
         {
             string phoneNumber = textBox4.Text;
@@ -511,46 +510,7 @@ namespace MechanicShop
                                 DataTable dt = new DataTable();
                                 adapter.Fill(dt);
 
-                                // Modify column headers
-                                dt.Columns["Car_Make"].ColumnName = "Make";
-                                dt.Columns["Car_Model"].ColumnName = "Model";
-                                dt.Columns["Car_License_Plate"].ColumnName = "License Plate";
-                                dt.Columns["Service_Date"].ColumnName = "Date";
-                                dt.Columns["Service_Time"].ColumnName = "Time";
-                                dt.Columns["Service_Name"].ColumnName = "Service";
-                                dt.Columns["Service_Cost"].ColumnName = "Cost";
-                                dt.Columns["Technician_Name"].ColumnName = "Technician";
-
-                                // Iterate through each row in the DataTable to parse datetime values
-                                foreach (DataRow row in dt.Rows)
-                                {
-                                    // Assuming Service_Date and Service_Time are retrieved as strings from the database
-                                    string serviceDate = row["Date"].ToString();
-                                    string serviceTime = row["Time"].ToString();
-
-                                    // Parse the date and time strings using DateTime.TryParseExact with the correct format
-                                    DateTime parsedDate, parsedTime;
-                                    if (DateTime.TryParseExact(serviceDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate)
-                                        && DateTime.TryParseExact(serviceTime, "HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedTime))
-                                    {
-                                        // Format the date without time
-                                        string formattedDate = parsedDate.ToString("MM-dd-yyyy");
-
-                                        // Format the time without seconds
-                                        string formattedTime = parsedTime.ToString("HH:mm");
-
-                                        // Assign the formatted date and time values back to the DataGridView columns
-                                        row["Date"] = formattedDate; // Assuming you have a column named "Date"
-                                        row["Time"] = formattedTime; // Assuming you have a column named "Time"
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("Error parsing datetime values from the database.");
-                                    }
-
-                                }
-
-                                // Bind the DataTable with updated datetime values to the dataGridView1
+                                // Bind the DataTable to the DataGridView
                                 dataGridView1.DataSource = dt;
 
                                 // Optional: Display a message if no service records are found
@@ -559,6 +519,9 @@ namespace MechanicShop
                                     MessageBox.Show("No service records found for the customer.");
                                 }
                             }
+
+                            // Populate comboBox5 with the customer's cars
+                            PopulateCarsComboBox(custID);
                         }
                         else
                         {
@@ -577,6 +540,75 @@ namespace MechanicShop
         }
 
 
+        // Method to populate the cars in comboBox5 currently not working
+        public class CarItem
+        {
+            public int CarID { get; set; }
+            public string Make { get; set; }
+            public string Model { get; set; }
+
+            public CarItem(int carID, string make, string model)
+            {
+                CarID = carID;
+                Make = make;
+                Model = model;
+            }
+
+            public override string ToString()
+            {
+                return $"{Make} {Model}";
+            }
+        }
+
+        // Method to populate the cars in comboBox5 displays license plate number
+        private void PopulateCarsComboBox(int custID)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // SQL query to retrieve customer's cars with make, model, and license plate details
+                    string query = @"
+                SELECT Car.Car_ID, Make.Make, Model.Model, Car.LicensePlate 
+                FROM Car 
+                INNER JOIN Make ON Car.MakeID = Make.MakeID 
+                INNER JOIN Model ON Car.ModelID = Model.ModelID 
+                INNER JOIN CarOwner ON Car.Car_ID = CarOwner.Car_ID 
+                WHERE CarOwner.Cust_ID = @CustID";
+
+                    // Create a SqlCommand object for the query
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        // Add parameter for customer ID
+                        command.Parameters.AddWithValue("@CustID", custID);
+
+                        // Execute the query and populate a DataTable
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+
+                        // Set the DisplayMember and ValueMember for comboBox5
+                        comboBox5.DisplayMember = "DisplayText";
+                        comboBox5.ValueMember = "Car_ID";
+
+                        // Create a new DataColumn for the display text (Make, Model, LicensePlate)
+                        dt.Columns.Add("DisplayText", typeof(string), "Make + ' ' + Model + ' - ' + LicensePlate");
+
+                        // Bind the DataTable to comboBox5
+                        comboBox5.DataSource = dt;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while populating the cars in comboBox5: " + ex.Message);
+            }
+        }
+
+
+
 
 
 
@@ -586,40 +618,39 @@ namespace MechanicShop
          * Could not delete these without cause the Design window to break and complain about errors.
          * Ignore everything below this comment, but DO NOT delete it or comment it out.
          */
-
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Code for dataGridView1_CellContentClick
+
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            // Code for textBox1_TextChanged
+
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Code for comboBox1_SelectedIndexChanged
+
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Code for comboBox2_SelectedIndexChanged
+
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-            // Code for textBox2_TextChanged
+
         }
 
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
-            // Code for textBox3_TextChanged
+
         }
 
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
-            // Code for textBox4_TextChanged
+
         }
 
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
@@ -638,6 +669,11 @@ namespace MechanicShop
         }
 
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox5_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

@@ -51,6 +51,8 @@
             button3 = new Button();
             comboBox4 = new ComboBox();
             label9 = new Label();
+            label10 = new Label();
+            comboBox5 = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -95,9 +97,9 @@
             // 
             button1.Location = new Point(441, 275);
             button1.Name = "button1";
-            button1.Size = new Size(75, 23);
+            button1.Size = new Size(94, 23);
             button1.TabIndex = 14;
-            button1.Text = "Add Car";
+            button1.Text = "Add New Car";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
             // 
@@ -138,7 +140,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(717, 373);
+            button2.Location = new Point(690, 444);
             button2.Name = "button2";
             button2.Size = new Size(138, 23);
             button2.TabIndex = 21;
@@ -149,7 +151,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(301, 344);
+            label4.Location = new Point(266, 344);
             label4.Name = "label4";
             label4.Size = new Size(85, 15);
             label4.TabIndex = 20;
@@ -167,7 +169,7 @@
             // comboBox3
             // 
             comboBox3.FormattingEnabled = true;
-            comboBox3.Location = new Point(301, 371);
+            comboBox3.Location = new Point(266, 371);
             comboBox3.Name = "comboBox3";
             comboBox3.Size = new Size(171, 23);
             comboBox3.TabIndex = 18;
@@ -177,7 +179,7 @@
             // 
             dateTimePicker1.Location = new Point(19, 371);
             dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(247, 23);
+            dateTimePicker1.Size = new Size(213, 23);
             dateTimePicker1.TabIndex = 17;
             // 
             // label6
@@ -244,7 +246,7 @@
             // comboBox4
             // 
             comboBox4.FormattingEnabled = true;
-            comboBox4.Location = new Point(519, 370);
+            comboBox4.Location = new Point(469, 371);
             comboBox4.Name = "comboBox4";
             comboBox4.Size = new Size(169, 23);
             comboBox4.TabIndex = 29;
@@ -253,18 +255,38 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(519, 344);
+            label9.Location = new Point(469, 345);
             label9.Name = "label9";
             label9.Size = new Size(97, 15);
             label9.TabIndex = 30;
             label9.Text = "Select Technician";
             label9.Click += label9_Click;
             // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(666, 345);
+            label10.Name = "label10";
+            label10.Size = new Size(59, 15);
+            label10.TabIndex = 31;
+            label10.Text = "Select Car";
+            // 
+            // comboBox5
+            // 
+            comboBox5.FormattingEnabled = true;
+            comboBox5.Location = new Point(666, 371);
+            comboBox5.Name = "comboBox5";
+            comboBox5.Size = new Size(162, 23);
+            comboBox5.TabIndex = 32;
+            comboBox5.SelectedIndexChanged += comboBox5_SelectedIndexChanged;
+            // 
             // Form3
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(879, 489);
+            Controls.Add(comboBox5);
+            Controls.Add(label10);
             Controls.Add(label9);
             Controls.Add(comboBox4);
             Controls.Add(button3);
@@ -320,5 +342,7 @@
         private Button button3;
         private ComboBox comboBox4;
         private Label label9;
+        private Label label10;
+        private ComboBox comboBox5;
     }
 }
