@@ -225,7 +225,6 @@ namespace MechanicShop
             }
         }
 
-
         // Method to get Cust_ID from phone number
         private int GetCustomerID(string phoneNumber)
         {
@@ -294,11 +293,11 @@ namespace MechanicShop
                         {
                             // SQL query to insert appointment data into Cust_Car_Service_Date_Time
                             string insertQuery = @"
-                            INSERT INTO Cust_Car_Service_Date_Time (Cust_Car_ID, ServiceDate, ServiceTime) 
-                            VALUES (@CustCarID, @AppointmentDate, @AppointmentTime);
+                                    INSERT INTO Cust_Car_Service_Date_Time (Cust_Car_ID, ServiceDate, ServiceTime) 
+                                    VALUES (@CustCarID, @AppointmentDate, @AppointmentTime);
 
-                            INSERT INTO Car_Service_Date_Services (Cust_Car_Date_ID, Tech_Service_ID) 
-                            VALUES (SCOPE_IDENTITY(), @TechServiceID)";
+                                    INSERT INTO Car_Service_Date_Services (Cust_Car_Date_ID, Tech_Service_ID) 
+                                    VALUES (SCOPE_IDENTITY(), @TechServiceID)";
 
                             using (SqlConnection connection = new SqlConnection(connectionString))
                             {
@@ -345,8 +344,6 @@ namespace MechanicShop
             }
         }
 
-
-
         // Method to get the Tech_Service_ID based on Tech_ID and Service_ID
         private int GetTechServiceID(System.Windows.Forms.ComboBox techComboBox, System.Windows.Forms.ComboBox serviceComboBox)
         {
@@ -379,7 +376,6 @@ namespace MechanicShop
             return techServiceID;
         }
 
-
         // Method to get the technician's ID
         private int GetTechnicianID(string technicianFullName)
         {
@@ -406,9 +402,6 @@ namespace MechanicShop
             {
                 MessageBox.Show("Error getting Technician ID: " + ex.Message);
             }
-
-            // Display pop-up message with the technician's ID
-            MessageBox.Show("Technician ID: " + techID);
 
             return techID;
         }
@@ -445,7 +438,6 @@ namespace MechanicShop
 
             return 0;
         }
-
 
         // Method to search for a customer based on phone number and display their service history and populate comboBox5 with their cars
         private void button3_Click(object sender, EventArgs e)
@@ -493,29 +485,29 @@ namespace MechanicShop
                             // Close the reader before executing the second query
                             reader.Close();
 
-                            // SQL query to retrieve service information for the customer
+                            // SQL query to retrieve service information for the customer with time formatted without seconds
                             string serviceQuery = @"
-                        SELECT
-                            M.Make AS Car_Make,
-                            MD.Model AS Car_Model,
-                            Ca.LicensePlate AS Car_License_Plate,
-                            CONVERT(VARCHAR(10), CCSDT.ServiceDate, 120) AS Service_Date, -- Format as yyyy-mm-dd
-                            CONVERT(VARCHAR(8), CCSDT.ServiceTime, 108) AS Service_Time, -- Format as HH:MM:SS
-                            S.Service AS Service_Name,
-                            S.Cost AS Service_Cost,
-                            CONCAT(T.Tech_FN, ' ', T.Tech_LN) AS Technician_Name
-                        FROM
-                            CarOwner CO
-                            INNER JOIN Car Ca ON CO.Car_ID = Ca.Car_ID
-                            INNER JOIN Cust_Car_Service_Date_Time CCSDT ON CO.Cust_Car_ID = CCSDT.Cust_Car_ID
-                            INNER JOIN Car_Service_Date_Services CSDS ON CCSDT.Cust_Car_Date_ID = CSDS.Cust_Car_Date_ID
-                            INNER JOIN Tech_to_Services TS ON CSDS.Tech_Service_ID = TS.Tech_Service_ID
-                            INNER JOIN Services S ON TS.Service_ID = S.Service_ID
-                            INNER JOIN Technician T ON TS.Tech_ID = T.Tech_ID
-                            INNER JOIN Make M ON Ca.MakeID = M.MakeID
-                            INNER JOIN Model MD ON Ca.ModelID = MD.ModelID
-                        WHERE
-                            CO.Cust_ID = @CustID";
+                                    SELECT
+                                        M.Make AS Car_Make,
+                                        MD.Model AS Car_Model,
+                                        Ca.LicensePlate AS Car_License_Plate,
+                                        FORMAT(CCSDT.ServiceDate, 'MMMM dd, yyyy') AS Service_Date, -- Format as Month Day, Year
+                                        CONVERT(VARCHAR(5), CCSDT.ServiceTime, 108) AS Service_Time, -- Format as HH:MI
+                                        S.Service AS Service_Name,
+                                        S.Cost AS Service_Cost,
+                                        CONCAT(T.Tech_FN, ' ', T.Tech_LN) AS Technician_Name
+                                    FROM
+                                        CarOwner CO
+                                        INNER JOIN Car Ca ON CO.Car_ID = Ca.Car_ID
+                                        INNER JOIN Cust_Car_Service_Date_Time CCSDT ON CO.Cust_Car_ID = CCSDT.Cust_Car_ID
+                                        INNER JOIN Car_Service_Date_Services CSDS ON CCSDT.Cust_Car_Date_ID = CSDS.Cust_Car_Date_ID
+                                        INNER JOIN Tech_to_Services TS ON CSDS.Tech_Service_ID = TS.Tech_Service_ID
+                                        INNER JOIN Services S ON TS.Service_ID = S.Service_ID
+                                        INNER JOIN Technician T ON TS.Tech_ID = T.Tech_ID
+                                        INNER JOIN Make M ON Ca.MakeID = M.MakeID
+                                        INNER JOIN Model MD ON Ca.ModelID = MD.ModelID
+                                    WHERE
+                                        CO.Cust_ID = @CustID";
 
                             // Create a new SqlCommand object for the service query
                             using (SqlCommand serviceCommand = new SqlCommand(serviceQuery, connection))
@@ -557,27 +549,6 @@ namespace MechanicShop
             }
         }
 
-
-        // Method to populate the cars in comboBox5 currently not working
-        public class CarItem
-        {
-            public int CarID { get; set; }
-            public string Make { get; set; }
-            public string Model { get; set; }
-
-            public CarItem(int carID, string make, string model)
-            {
-                CarID = carID;
-                Make = make;
-                Model = model;
-            }
-
-            public override string ToString()
-            {
-                return $"{Make} {Model}";
-            }
-        }
-
         // Method to populate the cars in comboBox5 displays license plate number
         private void PopulateCarsComboBox(int custID)
         {
@@ -589,12 +560,12 @@ namespace MechanicShop
 
                     // SQL query to retrieve customer's cars with make, model, and license plate details
                     string query = @"
-                SELECT Car.Car_ID, Make.Make, Model.Model, Car.LicensePlate 
-                FROM Car 
-                INNER JOIN Make ON Car.MakeID = Make.MakeID 
-                INNER JOIN Model ON Car.ModelID = Model.ModelID 
-                INNER JOIN CarOwner ON Car.Car_ID = CarOwner.Car_ID 
-                WHERE CarOwner.Cust_ID = @CustID";
+                            SELECT Car.Car_ID, Make.Make, Model.Model, Car.LicensePlate 
+                            FROM Car 
+                            INNER JOIN Make ON Car.MakeID = Make.MakeID 
+                            INNER JOIN Model ON Car.ModelID = Model.ModelID 
+                            INNER JOIN CarOwner ON Car.Car_ID = CarOwner.Car_ID 
+                            WHERE CarOwner.Cust_ID = @CustID";
 
                     // Create a SqlCommand object for the query
                     using (SqlCommand command = new SqlCommand(query, connection))
