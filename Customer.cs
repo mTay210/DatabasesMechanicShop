@@ -147,6 +147,7 @@ namespace MechanicShop
         }
 
         // Adds a new car to the database  BUT does NOT and links it to the customer if there is more than 1
+        // Adds a new car to the database and links it to the customer
         private void button1_Click(object sender, EventArgs e)
         {
             try
@@ -224,6 +225,7 @@ namespace MechanicShop
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
+
 
         // Method to get Cust_ID from phone number
         private int GetCustomerID(string phoneNumber)
