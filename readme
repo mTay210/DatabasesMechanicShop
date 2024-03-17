@@ -22,10 +22,11 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[Car_Service_Date_Services](
-	[Cust_Car_Date_Tech_ServicesID] [int] NOT NULL,
-	[Cust_Car_Date_ID] [int] NOT NULL,
-	[Tech_Service_ID] [int] NOT NULL
-) ON [PRIMARY]
+    [Cust_Car_Date_Tech_ServicesID] [int] IDENTITY(1,1) NOT NULL,
+    [Cust_Car_Date_ID] [int] NOT NULL,
+    [Tech_Service_ID] [int] NOT NULL
+)
+
 GO
 /****** Object:  Table [dbo].[CarOwner]    Script Date: 3/16/2024 12:00:15 PM ******/
 SET ANSI_NULLS ON
