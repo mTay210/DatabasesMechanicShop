@@ -101,11 +101,11 @@
             // 
             // button2
             // 
-            button2.Location = new Point(12, 124);
+            button2.Location = new Point(191, 78);
             button2.Name = "button2";
             button2.Size = new Size(150, 23);
             button2.TabIndex = 10;
-            button2.Text = "Customers";
+            button2.Text = "Current Customers";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
@@ -113,7 +113,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(700, 338);
+            ClientSize = new Size(486, 200);
             Controls.Add(button2);
             Controls.Add(textBox6);
             Controls.Add(textBox5);
