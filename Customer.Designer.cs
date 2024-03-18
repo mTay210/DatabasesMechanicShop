@@ -38,9 +38,7 @@
             label2 = new Label();
             label1 = new Label();
             button2 = new Button();
-            label4 = new Label();
             label5 = new Label();
-            comboBox3 = new ComboBox();
             dateTimePicker1 = new DateTimePicker();
             label6 = new Label();
             textBox2 = new TextBox();
@@ -49,8 +47,6 @@
             label8 = new Label();
             textBox4 = new TextBox();
             button3 = new Button();
-            comboBox4 = new ComboBox();
-            label9 = new Label();
             label10 = new Label();
             comboBox5 = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
@@ -140,22 +136,13 @@
             // 
             // button2
             // 
-            button2.Location = new Point(690, 444);
+            button2.Location = new Point(465, 373);
             button2.Name = "button2";
             button2.Size = new Size(138, 23);
             button2.TabIndex = 21;
-            button2.Text = "Submit Appointment";
+            button2.Text = "Schedule Appointment";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(266, 344);
-            label4.Name = "label4";
-            label4.Size = new Size(85, 15);
-            label4.TabIndex = 20;
-            label4.Text = "Type of Service";
             // 
             // label5
             // 
@@ -165,15 +152,6 @@
             label5.Size = new Size(157, 15);
             label5.TabIndex = 19;
             label5.Text = "Appointment Date and Time";
-            // 
-            // comboBox3
-            // 
-            comboBox3.FormattingEnabled = true;
-            comboBox3.Location = new Point(266, 371);
-            comboBox3.Name = "comboBox3";
-            comboBox3.Size = new Size(171, 23);
-            comboBox3.TabIndex = 18;
-            comboBox3.SelectedIndexChanged += comboBox3_SelectedIndexChanged;
             // 
             // dateTimePicker1
             // 
@@ -243,29 +221,10 @@
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
-            // comboBox4
-            // 
-            comboBox4.FormattingEnabled = true;
-            comboBox4.Location = new Point(469, 371);
-            comboBox4.Name = "comboBox4";
-            comboBox4.Size = new Size(169, 23);
-            comboBox4.TabIndex = 29;
-            comboBox4.SelectedIndexChanged += comboBox4_SelectedIndexChanged;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new Point(469, 345);
-            label9.Name = "label9";
-            label9.Size = new Size(97, 15);
-            label9.TabIndex = 30;
-            label9.Text = "Select Technician";
-            label9.Click += label9_Click;
-            // 
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(666, 345);
+            label10.Location = new Point(280, 353);
             label10.Name = "label10";
             label10.Size = new Size(59, 15);
             label10.TabIndex = 31;
@@ -274,7 +233,7 @@
             // comboBox5
             // 
             comboBox5.FormattingEnabled = true;
-            comboBox5.Location = new Point(666, 336);
+            comboBox5.Location = new Point(280, 371);
             comboBox5.Name = "comboBox5";
             comboBox5.Size = new Size(162, 23);
             comboBox5.TabIndex = 32;
@@ -284,11 +243,9 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(879, 489);
+            ClientSize = new Size(879, 416);
             Controls.Add(comboBox5);
             Controls.Add(label10);
-            Controls.Add(label9);
-            Controls.Add(comboBox4);
             Controls.Add(button3);
             Controls.Add(textBox4);
             Controls.Add(label8);
@@ -297,9 +254,7 @@
             Controls.Add(textBox2);
             Controls.Add(label6);
             Controls.Add(button2);
-            Controls.Add(label4);
             Controls.Add(label5);
-            Controls.Add(comboBox3);
             Controls.Add(dateTimePicker1);
             Controls.Add(comboBox2);
             Controls.Add(comboBox1);
@@ -329,9 +284,7 @@
         private Label label2;
         private Label label1;
         private Button button2;
-        private Label label4;
         private Label label5;
-        private ComboBox comboBox3;
         private DateTimePicker dateTimePicker1;
         private Label label6;
         private TextBox textBox2;
@@ -340,8 +293,6 @@
         private Label label8;
         private TextBox textBox4;
         private Button button3;
-        private ComboBox comboBox4;
-        private Label label9;
         private Label label10;
         private ComboBox comboBox5;
     }

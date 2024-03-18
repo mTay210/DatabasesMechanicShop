@@ -18,84 +18,11 @@ namespace MechanicShop
             InitializeComponent();
             PopulateModelComboBox();
             PopulateMakeComboBox();
-            PopulateServicesComboBox();
 
             // Set the DateTimePicker format to Custom to display both date and time
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
             // Set the CustomFormat to a format that includes both date and time
             dateTimePicker1.CustomFormat = "yyyy-MM-dd HH:mm";
-        }
-
-        // Populate the technicians combo box with all technicians available for the selected service
-        private void PopulateTechniciansComboBox(int serviceID)
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    string query = @"SELECT DISTINCT T.Tech_ID, T.Tech_FN, T.Tech_LN 
-                     FROM Technician T 
-                     INNER JOIN Tech_to_Services TS ON T.Tech_ID = TS.Tech_ID 
-                     WHERE TS.Service_ID = @ServiceID";
-
-                    SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-                    adapter.SelectCommand.Parameters.AddWithValue("@ServiceID", serviceID);
-
-                    DataTable dt = new DataTable();
-                    adapter.Fill(dt);
-
-                    dt.Columns.Add("FullName", typeof(string), "Tech_FN + ' ' + Tech_LN");
-
-                    comboBox4.DisplayMember = "FullName";
-                    comboBox4.ValueMember = "Tech_ID";
-                    comboBox4.DataSource = dt;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message);
-            }
-        }
-
-        // Populates the Services combobox and send the selected service ID to the PopulateTechniciansComboBox method
-        private void PopulateServicesComboBox()
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    string query = "SELECT Service_ID, Service FROM Services";
-                    SqlDataAdapter adapter = new SqlDataAdapter(query, connection);
-                    DataTable dt = new DataTable();
-                    adapter.Fill(dt);
-
-                    // Create a new row with a blank item
-                    DataRow blankRow = dt.NewRow();
-                    blankRow["Service_ID"] = DBNull.Value;
-                    blankRow["Service"] = string.Empty;
-                    dt.Rows.InsertAt(blankRow, 0);
-
-                    comboBox3.DisplayMember = "Service";
-                    comboBox3.ValueMember = "Service_ID";
-                    comboBox3.DataSource = dt;
-
-                    // Add event handler for SelectedIndexChanged
-                    comboBox3.SelectedIndexChanged += (sender, e) =>
-                    {
-                        if (comboBox3.SelectedValue != null && comboBox3.SelectedValue != DBNull.Value)
-                        {
-                            int selectedServiceID = Convert.ToInt32(comboBox3.SelectedValue);
-                            PopulateTechniciansComboBox(selectedServiceID);
-                        }
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message);
-            }
         }
 
         // Populates the Model combobox based on the selected Make
@@ -253,165 +180,89 @@ namespace MechanicShop
             }
         }
 
-        // Method to go back to the home page
-        private void button4_Click(object sender, EventArgs e)
+        private DateTime GetDateAndTime()
         {
-            // Create an instance of Form2 
-            Form1 form1 = new Form1();
+            DateTime selectedDateTime = dateTimePicker1.Value;
 
-            // Show Form2
-            form1.Show();
-
-            // Optionally, hide or close Form1
-            this.Hide();
+            return selectedDateTime;
         }
 
-        // Method to submit the appointment and link it to both Cust_Car_Service_Date_Time and Car_Service_Date_Services
-        private void button2_Click(object sender, EventArgs e)
+        // Method to populate the cars in comboBox5 currently not working
+        public class CarItem
         {
-            try
+            public int CarID { get; set; }
+            public string Make { get; set; }
+            public string Model { get; set; }
+            public string LicensePlate { get; set; }
+            public string DisplayText => $"{Make} {Model} - {LicensePlate}";
+
+            public CarItem(int carID, string make, string model, string licensePlate)
             {
-                // Get the selected car ID from comboBox5
-                if (comboBox5.SelectedValue != null && comboBox5.SelectedValue != DBNull.Value)
-                {
-                    int selectedCarID = Convert.ToInt32(comboBox5.SelectedValue);
-
-                    // Get the Cust_Car_ID based on the selected car
-                    int custCarID = GetCustCarID(selectedCarID);
-
-                    if (custCarID > 0)
-                    {
-                        // Get the appointment date and time from DateTimePicker
-                        DateTime appointmentDateTime = dateTimePicker1.Value;
-
-                        // Get the selected technician's ID
-                        int technicianID = GetTechnicianID(comboBox4.Text);
-
-                        // Get the Tech_Service_ID based on the selected service and technician
-                        int techServiceID = GetTechServiceID(comboBox4, comboBox3);
-
-                        if (techServiceID > 0)
-                        {
-                            // SQL query to insert appointment data into Cust_Car_Service_Date_Time
-                            string insertQuery = @"
-                            INSERT INTO Cust_Car_Service_Date_Time (Cust_Car_ID, ServiceDate, ServiceTime) 
-                            VALUES (@CustCarID, @AppointmentDate, @AppointmentTime);
-
-                            INSERT INTO Car_Service_Date_Services (Cust_Car_Date_ID, Tech_Service_ID) 
-                            VALUES (SCOPE_IDENTITY(), @TechServiceID)";
-
-                            using (SqlConnection connection = new SqlConnection(connectionString))
-                            {
-                                connection.Open();
-
-                                using (SqlCommand command = new SqlCommand(insertQuery, connection))
-                                {
-                                    command.Parameters.AddWithValue("@CustCarID", custCarID);
-                                    command.Parameters.AddWithValue("@AppointmentDate", appointmentDateTime.Date);
-                                    command.Parameters.AddWithValue("@AppointmentTime", appointmentDateTime.TimeOfDay);
-                                    command.Parameters.AddWithValue("@TechServiceID", techServiceID);
-
-                                    int rowsAffected = command.ExecuteNonQuery();
-
-                                    if (rowsAffected > 0)
-                                    {
-                                        MessageBox.Show("Appointment scheduled successfully!");
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("Error adding appointment.");
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Error: Tech_Service_ID not found.");
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error: Could not find a car associated with the customer.");
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Please select a car from the list.");
-                }
+                CarID = carID;
+                Make = make;
+                Model = model;
+                LicensePlate = licensePlate;
             }
-            catch (Exception ex)
+
+            public override string ToString()
             {
-                MessageBox.Show("Error: " + ex.Message);
+                return DisplayText;
             }
         }
 
 
-
-        // Method to get the Tech_Service_ID based on Tech_ID and Service_ID
-        private int GetTechServiceID(System.Windows.Forms.ComboBox techComboBox, System.Windows.Forms.ComboBox serviceComboBox)
+        // Method to populate the cars in comboBox5 displays license plate number
+        private void PopulateCarsComboBox(int custID)
         {
-            int techServiceID = 0;
-
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    string query = "SELECT Tech_Service_ID FROM Tech_to_Services WHERE Tech_ID = @TechID AND Service_ID = @ServiceID";
+
+                    string query = @"
+                            SELECT Car.Car_ID, Make.Make, Model.Model, Car.LicensePlate 
+                            FROM Car 
+                            INNER JOIN Make ON Car.MakeID = Make.MakeID 
+                            INNER JOIN Model ON Car.ModelID = Model.ModelID 
+                            INNER JOIN CarOwner ON Car.Car_ID = CarOwner.Car_ID 
+                            WHERE CarOwner.Cust_ID = @CustID";
+
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        // Assuming the ComboBoxes are bound to a DataTable with appropriate ValueMember set
-                        command.Parameters.AddWithValue("@TechID", techComboBox.SelectedValue);
-                        command.Parameters.AddWithValue("@ServiceID", serviceComboBox.SelectedValue);
-                        object result = command.ExecuteScalar();
-                        if (result != null)
+                        command.Parameters.AddWithValue("@CustID", custID);
+
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+
+                        // Create a list to hold CarItem objects
+                        List<CarItem> cars = new List<CarItem>();
+
+                        foreach (DataRow row in dt.Rows)
                         {
-                            techServiceID = Convert.ToInt32(result);
+                            int carID = Convert.ToInt32(row["Car_ID"]);
+                            string make = row["Make"].ToString();
+                            string model = row["Model"].ToString();
+                            string licensePlate = row["LicensePlate"].ToString();
+
+                            // Create a new CarItem and add it to the list
+                            cars.Add(new CarItem(carID, make, model, licensePlate));
                         }
+
+                        // Bind the list of CarItem objects to comboBox5
+                        comboBox5.DisplayMember = "DisplayText";
+                        comboBox5.ValueMember = "CarID";
+                        comboBox5.DataSource = cars;
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error getting Tech_Service_ID: " + ex.Message);
+                MessageBox.Show("An error occurred while populating the cars in comboBox5: " + ex.Message);
             }
-
-            return techServiceID;
         }
 
-
-        // Method to get the technician's ID
-        private int GetTechnicianID(string technicianFullName)
-        {
-            int techID = 0;
-
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-                    string query = @"SELECT Tech_ID FROM Technician WHERE CONCAT(Tech_FN, ' ', Tech_LN) = @FullName";
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@FullName", technicianFullName);
-                        object result = command.ExecuteScalar();
-                        if (result != null)
-                        {
-                            techID = Convert.ToInt32(result);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error getting Technician ID: " + ex.Message);
-            }
-
-            // Display pop-up message with the technician's ID
-            MessageBox.Show("Technician ID: " + techID);
-
-            return techID;
-        }
 
         // Method to get the Cust_Car_ID based on the selected car in comboBox5
         private int GetCustCarID(int carID)
@@ -444,6 +295,69 @@ namespace MechanicShop
             }
 
             return 0;
+        }
+
+        // Method to go back to the home page
+        private void button4_Click(object sender, EventArgs e)
+        {
+            // Create an instance of Form2 
+            Form1 form1 = new Form1();
+
+            // Show Form2
+            form1.Show();
+
+            // Optionally, hide or close Form1
+            this.Hide();
+        }
+
+        // Method to open Appointment form and store car, date and time information
+        private void button2_Click(object sender, EventArgs e)
+        {
+            // Get the selected date and time from the dateTimePicker1
+            DateTime selectedDateTime = GetDateAndTime();
+
+            // Check if a car is selected in comboBox5
+            if (comboBox5.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a car from the list.");
+                return;
+            }
+
+            // Assuming comboBox5 is bound to a list of CarItem objects
+            CarItem selectedCar = comboBox5.SelectedItem as CarItem;
+
+            // Check if selectedCar is null
+            if (selectedCar == null)
+            {
+                MessageBox.Show("Error: Selected car is invalid.");
+                return;
+            }
+
+            int selectedCarID = selectedCar.CarID;
+
+            // Get the Cust_Car_ID based on the selected car
+            int custCarID = GetCustCarID(selectedCarID);
+
+            if (custCarID > 0)
+            {
+                // Create an instance of Form4
+                Appointment form4 = new Appointment();
+
+                // Pass necessary data to Form4
+                form4.CustCarID = custCarID;
+                form4.CustomerFirstName = textBox2.Text;
+                form4.CustomerLastName = textBox3.Text;
+
+                // Pass the selected date and time to Form4
+                form4.DateAndTime = selectedDateTime;
+
+                // Show Form4
+                form4.Show();
+            }
+            else
+            {
+                MessageBox.Show("Error: Could not find a car associated with the customer.");
+            }
         }
 
 
@@ -495,27 +409,27 @@ namespace MechanicShop
 
                             // SQL query to retrieve service information for the customer
                             string serviceQuery = @"
-                        SELECT
-                            M.Make AS Car_Make,
-                            MD.Model AS Car_Model,
-                            Ca.LicensePlate AS Car_License_Plate,
-                            CONVERT(VARCHAR(10), CCSDT.ServiceDate, 120) AS Service_Date, -- Format as yyyy-mm-dd
-                            CONVERT(VARCHAR(8), CCSDT.ServiceTime, 108) AS Service_Time, -- Format as HH:MM:SS
-                            S.Service AS Service_Name,
-                            S.Cost AS Service_Cost,
-                            CONCAT(T.Tech_FN, ' ', T.Tech_LN) AS Technician_Name
-                        FROM
-                            CarOwner CO
-                            INNER JOIN Car Ca ON CO.Car_ID = Ca.Car_ID
-                            INNER JOIN Cust_Car_Service_Date_Time CCSDT ON CO.Cust_Car_ID = CCSDT.Cust_Car_ID
-                            INNER JOIN Car_Service_Date_Services CSDS ON CCSDT.Cust_Car_Date_ID = CSDS.Cust_Car_Date_ID
-                            INNER JOIN Tech_to_Services TS ON CSDS.Tech_Service_ID = TS.Tech_Service_ID
-                            INNER JOIN Services S ON TS.Service_ID = S.Service_ID
-                            INNER JOIN Technician T ON TS.Tech_ID = T.Tech_ID
-                            INNER JOIN Make M ON Ca.MakeID = M.MakeID
-                            INNER JOIN Model MD ON Ca.ModelID = MD.ModelID
-                        WHERE
-                            CO.Cust_ID = @CustID";
+                                    SELECT
+                                        M.Make AS Car_Make,
+                                        MD.Model AS Car_Model,
+                                        Ca.LicensePlate AS Car_License_Plate,
+                                        CONVERT(VARCHAR(10), CCSDT.ServiceDate, 120) AS Service_Date, -- Format as yyyy-mm-dd
+                                        CONVERT(VARCHAR(8), CCSDT.ServiceTime, 108) AS Service_Time, -- Format as HH:MM:SS
+                                        S.Service AS Service_Name,
+                                        S.Cost AS Service_Cost,
+                                        CONCAT(T.Tech_FN, ' ', T.Tech_LN) AS Technician_Name
+                                    FROM
+                                        CarOwner CO
+                                        INNER JOIN Car Ca ON CO.Car_ID = Ca.Car_ID
+                                        INNER JOIN Cust_Car_Service_Date_Time CCSDT ON CO.Cust_Car_ID = CCSDT.Cust_Car_ID
+                                        INNER JOIN Car_Service_Date_Services CSDS ON CCSDT.Cust_Car_Date_ID = CSDS.Cust_Car_Date_ID
+                                        INNER JOIN Tech_to_Services TS ON CSDS.Tech_Service_ID = TS.Tech_Service_ID
+                                        INNER JOIN Services S ON TS.Service_ID = S.Service_ID
+                                        INNER JOIN Technician T ON TS.Tech_ID = T.Tech_ID
+                                        INNER JOIN Make M ON Ca.MakeID = M.MakeID
+                                        INNER JOIN Model MD ON Ca.ModelID = MD.ModelID
+                                    WHERE
+                                        CO.Cust_ID = @CustID";
 
                             // Create a new SqlCommand object for the service query
                             using (SqlCommand serviceCommand = new SqlCommand(serviceQuery, connection))
@@ -557,73 +471,6 @@ namespace MechanicShop
             }
         }
 
-
-        // Method to populate the cars in comboBox5 currently not working
-        public class CarItem
-        {
-            public int CarID { get; set; }
-            public string Make { get; set; }
-            public string Model { get; set; }
-
-            public CarItem(int carID, string make, string model)
-            {
-                CarID = carID;
-                Make = make;
-                Model = model;
-            }
-
-            public override string ToString()
-            {
-                return $"{Make} {Model}";
-            }
-        }
-
-        // Method to populate the cars in comboBox5 displays license plate number
-        private void PopulateCarsComboBox(int custID)
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-
-                    // SQL query to retrieve customer's cars with make, model, and license plate details
-                    string query = @"
-                SELECT Car.Car_ID, Make.Make, Model.Model, Car.LicensePlate 
-                FROM Car 
-                INNER JOIN Make ON Car.MakeID = Make.MakeID 
-                INNER JOIN Model ON Car.ModelID = Model.ModelID 
-                INNER JOIN CarOwner ON Car.Car_ID = CarOwner.Car_ID 
-                WHERE CarOwner.Cust_ID = @CustID";
-
-                    // Create a SqlCommand object for the query
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        // Add parameter for customer ID
-                        command.Parameters.AddWithValue("@CustID", custID);
-
-                        // Execute the query and populate a DataTable
-                        SqlDataAdapter adapter = new SqlDataAdapter(command);
-                        DataTable dt = new DataTable();
-                        adapter.Fill(dt);
-
-                        // Set the DisplayMember and ValueMember for comboBox5
-                        comboBox5.DisplayMember = "DisplayText";
-                        comboBox5.ValueMember = "Car_ID";
-
-                        // Create a new DataColumn for the display text (Make, Model, LicensePlate)
-                        dt.Columns.Add("DisplayText", typeof(string), "Make + ' ' + Model + ' - ' + LicensePlate");
-
-                        // Bind the DataTable to comboBox5
-                        comboBox5.DataSource = dt;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred while populating the cars in comboBox5: " + ex.Message);
-            }
-        }
 
 
 
