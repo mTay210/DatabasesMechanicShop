@@ -51,4 +51,8 @@ INSERT INTO Tech_to_Services (Tech_ID, Service_ID) VALUES
 (3, 4), -- William Williams also performs Engine Tune-Up
 (4, 5), -- James Brown also performs Wheel Alignment
 (5, 1); -- Robert Davis also performs Oil Change
-
+(1, 3), -- John Smith performs Tire Rotation additionally
+(2, 4), -- Michael Johnson performs Engine Tune-Up additionally
+(3, 5), -- William Williams performs Wheel Alignment additionally
+(4, 1), -- James Brown performs Oil Change additionally
+(5, 2); -- Robert Davis performs Brake Inspection additionally
