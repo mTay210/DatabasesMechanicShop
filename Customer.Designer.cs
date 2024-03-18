@@ -274,7 +274,7 @@
             // comboBox5
             // 
             comboBox5.FormattingEnabled = true;
-            comboBox5.Location = new Point(666, 295);
+            comboBox5.Location = new Point(666, 336);
             comboBox5.Name = "comboBox5";
             comboBox5.Size = new Size(162, 23);
             comboBox5.TabIndex = 32;
