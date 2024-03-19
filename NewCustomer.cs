@@ -70,6 +70,9 @@ namespace MechanicShop
                     }
                 }
             }
+
+            // Clear the form boxes
+            this.Close();
         }
     }
 }

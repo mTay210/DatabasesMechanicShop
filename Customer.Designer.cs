@@ -40,7 +40,6 @@
             button2 = new Button();
             label4 = new Label();
             label5 = new Label();
-            comboBox3 = new ComboBox();
             dateTimePicker1 = new DateTimePicker();
             label6 = new Label();
             textBox2 = new TextBox();
@@ -49,8 +48,6 @@
             label8 = new Label();
             textBox4 = new TextBox();
             button3 = new Button();
-            comboBox4 = new ComboBox();
-            label9 = new Label();
             label10 = new Label();
             comboBox5 = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
@@ -164,13 +161,6 @@
             label5.TabIndex = 19;
             label5.Text = "Appointment Date and Time";
             // 
-            // comboBox3
-            // 
-            comboBox3.Location = new Point(0, 0);
-            comboBox3.Name = "comboBox3";
-            comboBox3.Size = new Size(121, 23);
-            comboBox3.TabIndex = 36;
-            // 
             // dateTimePicker1
             // 
             dateTimePicker1.Location = new Point(19, 371);
@@ -239,20 +229,6 @@
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
-            // comboBox4
-            // 
-            comboBox4.Location = new Point(0, 0);
-            comboBox4.Name = "comboBox4";
-            comboBox4.Size = new Size(121, 23);
-            comboBox4.TabIndex = 34;
-            // 
-            // label9
-            // 
-            label9.Location = new Point(0, 0);
-            label9.Name = "label9";
-            label9.Size = new Size(100, 23);
-            label9.TabIndex = 33;
-            // 
             // label10
             // 
             label10.AutoSize = true;
@@ -278,8 +254,6 @@
             ClientSize = new Size(879, 433);
             Controls.Add(comboBox5);
             Controls.Add(label10);
-            Controls.Add(label9);
-            Controls.Add(comboBox4);
             Controls.Add(button3);
             Controls.Add(textBox4);
             Controls.Add(label8);

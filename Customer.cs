@@ -668,6 +668,11 @@ namespace MechanicShop
         {
 
         }
+
+        private void label9_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
