@@ -14,54 +14,11 @@ namespace MechanicShop
             InitializeComponent();
         }
 
+        // This method is used to open the NewCustomer form
         private void button1_Click(object sender, EventArgs e)
         {
-            string firstName = textBox4.Text;
-            string lastName = textBox5.Text;
-            string phoneNumber = textBox6.Text;
-
-            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(phoneNumber))
-            {
-                MessageBox.Show("Please enter all fields.");
-                return;
-            }
-
-            // SQL query to insert data into the Customer table
-            string query = "INSERT INTO Customer (Cust_FN, Cust_LN, Phone) VALUES (@FirstName, @LastName, @PhoneNumber)";
-
-            // Create a SqlConnection object using the connection string
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                // Create a SqlCommand object with the query and connection
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    // Add parameters to prevent SQL injection
-                    command.Parameters.AddWithValue("@FirstName", firstName);
-                    command.Parameters.AddWithValue("@LastName", lastName);
-                    command.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
-
-                    try
-                    {
-                        // Open the connection
-                        connection.Open();
-                        // Execute the command
-                        int rowsAffected = command.ExecuteNonQuery();
-                        // Check if any rows were affected
-                        if (rowsAffected > 0)
-                        {
-                            MessageBox.Show("Customer added successfully.");
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to add customer.");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occurred: " + ex.Message);
-                    }
-                }
-            }
+            NewCustomer newCustomer = new NewCustomer();
+            newCustomer.Show();
         }
 
         // This method is used to open the Customer form
@@ -69,9 +26,27 @@ namespace MechanicShop
         {
             Form3 form3 = new Form3();
             form3.Show();
+        }
 
-            // Close the home page
-            this.Hide();
+        // This method is used to open the AddTech form
+        private void button3_Click(object sender, EventArgs e)
+        {
+            AddTech addTech = new AddTech();
+            addTech.Show();
+        }
+
+        // This method is used to open the AddService form
+        private void button4_Click(object sender, EventArgs e)
+        {
+            AddService addService = new AddService();
+            addService.Show();
+        }
+
+        // This method is used to open the TechServices form
+        private void button5_Click(object sender, EventArgs e)
+        {
+            TechServices techServices = new TechServices();
+            techServices.Show();
         }
 
         /*

@@ -28,22 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
             label9 = new Label();
             comboBox4 = new ComboBox();
             button2 = new Button();
             label4 = new Label();
             comboBox3 = new ComboBox();
             SuspendLayout();
-            // 
-            // button1
-            // 
-            button1.Location = new Point(392, 43);
-            button1.Name = "button1";
-            button1.Size = new Size(104, 23);
-            button1.TabIndex = 43;
-            button1.Text = "Add Service";
-            button1.UseVisualStyleBackColor = true;
             // 
             // label9
             // 
@@ -64,7 +54,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(511, 44);
+            button2.Location = new Point(413, 43);
             button2.Name = "button2";
             button2.Size = new Size(175, 23);
             button2.TabIndex = 40;
@@ -92,8 +82,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(714, 103);
-            Controls.Add(button1);
+            ClientSize = new Size(618, 103);
             Controls.Add(label9);
             Controls.Add(comboBox4);
             Controls.Add(button2);
@@ -106,8 +95,6 @@
         }
 
         #endregion
-
-        private Button button1;
         private Label label9;
         private ComboBox comboBox4;
         private Button button2;
