@@ -273,13 +273,18 @@ namespace MechanicShop
                     // Get the selected car ID from comboBox5
                     int selectedCarID = Convert.ToInt32(comboBox5.SelectedValue);
 
-                    // Create an instance of the Appointment form
-                    Appointment appointmentForm = new Appointment();
+                    // Get the selected date and time from dateTimePicker1
+                    DateTime selectedDateTime = dateTimePicker1.Value;
 
-                    // Pass the necessary data to the appointmentForm instance
-                    appointmentForm.CustomerFirstName = textBox2.Text; 
-                    appointmentForm.CustomerLastName = textBox3.Text; 
+                    // Debugging statements to check values
+                    MessageBox.Show($"Customer Name: {textBox2.Text} {textBox3.Text}\nSelected Car ID: {selectedCarID}\nSelected Date and Time: {selectedDateTime}");
+
+                    // Create an instance of the Appointment form and set the properties
+                    Appointment appointmentForm = new Appointment();
+                    appointmentForm.CustomerFirstName = textBox2.Text;
+                    appointmentForm.CustomerLastName = textBox3.Text;
                     appointmentForm.CustCarID = selectedCarID; // Pass the selected car ID
+                    appointmentForm.DateAndTime = selectedDateTime; // Set the selected date and time
 
                     // Show the appointment form
                     appointmentForm.Show();
@@ -294,6 +299,7 @@ namespace MechanicShop
                 MessageBox.Show("Error: " + ex.Message);
             }
         }
+
 
 
         // Method to search for a customer based on phone number and display their service history and populate comboBox5 with their cars
