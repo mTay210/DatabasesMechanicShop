@@ -60,6 +60,7 @@
             button2.TabIndex = 40;
             button2.Text = "Submit Technician Service";
             button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
             // 
             // label4
             // 

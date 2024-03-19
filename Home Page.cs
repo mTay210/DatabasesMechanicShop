@@ -19,6 +19,9 @@ namespace MechanicShop
         {
             NewCustomer newCustomer = new NewCustomer();
             newCustomer.Show();
+
+            // Hide the current form
+            this.Hide();
         }
 
         // This method is used to open the Customer form
@@ -26,6 +29,9 @@ namespace MechanicShop
         {
             Form3 form3 = new Form3();
             form3.Show();
+
+            // Hide the current form
+            this.Hide();
         }
 
         // This method is used to open the AddTech form
@@ -33,6 +39,9 @@ namespace MechanicShop
         {
             AddTech addTech = new AddTech();
             addTech.Show();
+
+            // Hide the current form
+            this.Hide();
         }
 
         // This method is used to open the AddService form
@@ -47,7 +56,12 @@ namespace MechanicShop
         {
             TechServices techServices = new TechServices();
             techServices.Show();
+
+            // Hide the current form
+            this.Hide();
         }
+
+
 
         /*
          * Could not delete these without cause the Design window to break and complain about errors.

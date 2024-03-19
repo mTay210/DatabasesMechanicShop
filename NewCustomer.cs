@@ -73,6 +73,10 @@ namespace MechanicShop
 
             // Clear the form boxes
             this.Close();
+
+            // Open the Home Page form
+            Form1 form1 = new Form1();
+            form1.Show();
         }
     }
 }
