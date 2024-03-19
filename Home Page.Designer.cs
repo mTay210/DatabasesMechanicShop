@@ -81,7 +81,7 @@
             button5.Name = "button5";
             button5.Size = new Size(188, 23);
             button5.TabIndex = 13;
-            button5.Text = "Add New Technician to Service";
+            button5.Text = "Add Technician to Service";
             button5.UseVisualStyleBackColor = true;
             button5.Click += button5_Click;
             // 

@@ -51,6 +51,7 @@
             comboBox4.Name = "comboBox4";
             comboBox4.Size = new Size(169, 23);
             comboBox4.TabIndex = 41;
+            comboBox4.SelectedIndexChanged += comboBox4_SelectedIndexChanged;
             // 
             // button2
             // 
@@ -78,12 +79,13 @@
             comboBox3.Name = "comboBox3";
             comboBox3.Size = new Size(171, 23);
             comboBox3.TabIndex = 38;
+            comboBox3.SelectedIndexChanged += comboBox3_SelectedIndexChanged;
             // 
             // TechServices
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(618, 103);
+            ClientSize = new Size(618, 101);
             Controls.Add(label9);
             Controls.Add(comboBox4);
             Controls.Add(button2);

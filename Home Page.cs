@@ -58,7 +58,7 @@ namespace MechanicShop
             techServices.Show();
 
             // Hide the current form
-            this.Hide();
+            //this.Hide();
         }
 
 
