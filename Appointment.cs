@@ -28,6 +28,9 @@ namespace MechanicShop
         // Field to store the selected date and time
         private DateTime selectedDateTime;
 
+        // Property to store the selected date and time
+        public DateTime DateAndTime { get; set; }
+
         public Appointment()
         {
             InitializeComponent();
@@ -36,13 +39,6 @@ namespace MechanicShop
             // Initialize the selectedDateTime field to current date and time
             selectedDateTime = DateTime.Now;
         }
-
-        public DateTime DateAndTime
-        {
-            get => selectedDateTime;
-            set => selectedDateTime = value;
-        }
-
 
         // Populate the Services combobox
         private void PopulateServicesComboBox()
