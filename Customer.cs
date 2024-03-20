@@ -42,7 +42,6 @@ namespace MechanicShop
             // Add columns to dataGridView2
             dataGridView2.Columns.Add("Service", "Service");
             dataGridView2.Columns.Add("Technician", "Technician");
-            dataGridView2.Columns.Add("Cost", "Cost");
         }
 
         // Populates the Model combobox based on the selected Make
@@ -482,10 +481,9 @@ namespace MechanicShop
             }
         }
 
-        // Modify button2_Click to add selected services, technicians, and other details to the queue
+        // MEthod to add service, technician, date and time to queue
         private void button2_Click(object sender, EventArgs e)
         {
-            // Add selected service, technician, and other details to the queue
             AddToQueue();
         }
 

@@ -19,9 +19,6 @@ namespace MechanicShop
         {
             NewCustomer newCustomer = new NewCustomer();
             newCustomer.Show();
-
-            // Hide the current form
-            this.Hide();
         }
 
         // This method is used to open the Customer form
@@ -39,9 +36,6 @@ namespace MechanicShop
         {
             AddTech addTech = new AddTech();
             addTech.Show();
-
-            // Hide the current form
-            this.Hide();
         }
 
         // This method is used to open the AddService form
@@ -56,9 +50,6 @@ namespace MechanicShop
         {
             TechServices techServices = new TechServices();
             techServices.Show();
-
-            // Hide the current form
-            //this.Hide();
         }
 
 
