@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-// comment to overwrite the previous commit
 namespace MechanicShop
 {
     public partial class Form3 : Form
