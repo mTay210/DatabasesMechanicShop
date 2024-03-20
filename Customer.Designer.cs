@@ -50,7 +50,14 @@
             button3 = new Button();
             label10 = new Label();
             comboBox5 = new ComboBox();
+            label9 = new Label();
+            button6 = new Button();
+            label11 = new Label();
+            comboBox3 = new ComboBox();
+            comboBox4 = new ComboBox();
+            dataGridView2 = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
             SuspendLayout();
             // 
             // button4
@@ -137,11 +144,11 @@
             // 
             // button2
             // 
-            button2.Location = new Point(473, 370);
+            button2.Location = new Point(673, 438);
             button2.Name = "button2";
             button2.Size = new Size(138, 23);
             button2.TabIndex = 21;
-            button2.Text = "Select Services";
+            button2.Text = "Add Service";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
@@ -247,11 +254,72 @@
             comboBox5.TabIndex = 32;
             comboBox5.SelectedIndexChanged += comboBox5_SelectedIndexChanged;
             // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(673, 344);
+            label9.Name = "label9";
+            label9.Size = new Size(97, 15);
+            label9.TabIndex = 40;
+            label9.Text = "Select Technician";
+            // 
+            // button6
+            // 
+            button6.Location = new Point(673, 503);
+            button6.Name = "button6";
+            button6.Size = new Size(138, 23);
+            button6.TabIndex = 39;
+            button6.Text = "Submit Appointment";
+            button6.UseVisualStyleBackColor = true;
+            button6.Click += button6_Click;
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(459, 344);
+            label11.Name = "label11";
+            label11.Size = new Size(85, 15);
+            label11.TabIndex = 38;
+            label11.Text = "Type of Service";
+            // 
+            // comboBox3
+            // 
+            comboBox3.FormattingEnabled = true;
+            comboBox3.Location = new Point(459, 371);
+            comboBox3.Name = "comboBox3";
+            comboBox3.Size = new Size(171, 23);
+            comboBox3.TabIndex = 41;
+            comboBox3.SelectedIndexChanged += comboBox3_SelectedIndexChanged_1;
+            // 
+            // comboBox4
+            // 
+            comboBox4.FormattingEnabled = true;
+            comboBox4.Location = new Point(673, 371);
+            comboBox4.Name = "comboBox4";
+            comboBox4.Size = new Size(169, 23);
+            comboBox4.TabIndex = 42;
+            comboBox4.SelectedIndexChanged += comboBox4_SelectedIndexChanged_1;
+            // 
+            // dataGridView2
+            // 
+            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView2.Location = new Point(19, 427);
+            dataGridView2.Name = "dataGridView2";
+            dataGridView2.Size = new Size(611, 114);
+            dataGridView2.TabIndex = 43;
+            //dataGridView2.CellContentClick += dataGridView2_CellContentClick;
+            // 
             // Form3
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(879, 433);
+            ClientSize = new Size(879, 581);
+            Controls.Add(dataGridView2);
+            Controls.Add(comboBox4);
+            Controls.Add(comboBox3);
+            Controls.Add(label9);
+            Controls.Add(button6);
+            Controls.Add(label11);
             Controls.Add(comboBox5);
             Controls.Add(label10);
             Controls.Add(button3);
@@ -264,7 +332,6 @@
             Controls.Add(button2);
             Controls.Add(label4);
             Controls.Add(label5);
-            Controls.Add(comboBox3);
             Controls.Add(dateTimePicker1);
             Controls.Add(comboBox2);
             Controls.Add(comboBox1);
@@ -279,6 +346,7 @@
             Text = "Form3";
             Load += Form3_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -309,5 +377,8 @@
         private Label label9;
         private Label label10;
         private ComboBox comboBox5;
+        private Button button6;
+        private Label label11;
+        private DataGridView dataGridView2;
     }
 }
