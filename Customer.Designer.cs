@@ -1,4 +1,4 @@
-﻿namespace MechanicShop
+namespace MechanicShop
 {
     partial class Form3
     {
